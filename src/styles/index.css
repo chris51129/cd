@@ -1,0 +1,32 @@
+/* ========================================
+   CryptoDuels - Main Stylesheet
+   Dark Elegance Design System
+   ======================================== */
+
+/* Base Styles */
+@import './base/variables.css';
+@import './base/theme-transition.css';
+@import './base/reset.css';
+@import './base/typography.css';
+@import './base/light-mode-overrides.css';
+
+/* Layout */
+@import './layout/navbar.css';
+@import './layout/footer.css';
+@import './layout/containers.css';
+
+/* Components */
+@import './components/buttons.css';
+@import './components/cards.css';
+@import './components/animations.css';
+
+/* Page-specific Styles */
+@import './pages/home.css';
+@import './pages/game.css';
+@import './pages/transparency.css';
+
+/* Utilities (always last for specificity) */
+@import './utilities.css';
+
+/* Responsive - Must be last to override everything */
+@import './base/responsive.css';

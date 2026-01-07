@@ -1,0 +1,75 @@
+/* ========================================
+   CryptoDuels - Buttons
+   ======================================== */
+
+.btn-primary {
+    background-color: #FFFFFF;
+    color: #000000;
+    font-weight: 800;
+    border: 1px solid #FFFFFF;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary:hover {
+    background: #FFFFFF;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(255, 255, 255, 0.25), 0 0 14px rgba(255, 255, 255, 0.12);
+    border-color: #FFFFFF;
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-secondary {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    text-transform: none;
+    letter-spacing: 0.02em;
+    font-weight: 700;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 255, 255, 0.07);
+}
+
+.btn-secondary:active {
+    transform: scale(0.98);
+}
+
+.hero-btn {
+    padding: 0.75rem 2rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+}
+
+/* Responsive styles moved to base/responsive.css */
+
+/* ========================================
+   Light Mode Overrides
+   ======================================== */
+
+[data-theme="light"] .btn-secondary {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: var(--text-primary);
+    background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="light"] .btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}

@@ -1,0 +1,138 @@
+/**
+ * StepIndicator - Estilos del indicador de pasos
+ * 
+ * Diseño visual consistente con el sistema de diseño de CryptoDuels
+ */
+
+.step-indicator {
+    width: 100%;
+    padding: 1rem 0;
+    margin-block-end: 1.5lh;
+}
+
+.step-track {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+}
+
+/* Step Item */
+.step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Step Circle */
+.step-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transition: all 0.2s ease-out;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-primary);
+}
+
+/* States */
+.step-item.upcoming .step-circle {
+    opacity: 0.5;
+    filter: grayscale(1);
+}
+
+.step-item.current .step-circle {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 20px rgba(46, 92, 255, 0.4);
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.step-item.completed .step-circle {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border-color: #22c55e;
+}
+
+.step-check {
+    color: white;
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+/* Label */
+.step-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-align: center;
+    white-space: nowrap;
+    font-weight: 500;
+    transition: color 0.2s ease-out;
+}
+
+.step-item.current .step-label {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.step-item.completed .step-label {
+    color: #22c55e;
+}
+
+/* Connector */
+.step-connector {
+    width: 60px;
+    height: 3px;
+    background: var(--border-primary);
+    position: relative;
+    margin: 0 0.5rem;
+    margin-bottom: 1.5rem;
+    /* Align with circles */
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.step-connector-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+    transform-origin: left;
+}
+
+/* Pulse Animation */
+@keyframes pulse-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px rgba(46, 92, 255, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(46, 92, 255, 0.6);
+    }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .step-connector {
+        width: 30px;
+    }
+
+    .step-circle {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .step-label {
+        font-size: 0.65rem;
+    }
+}

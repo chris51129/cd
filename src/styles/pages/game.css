@@ -1,0 +1,557 @@
+/* ========================================
+   CryptoDuels - Game Page Styles
+   ======================================== */
+
+/* Game Arena Layout */
+.game-arena {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.arena-header {
+    margin-block-end: 3lh;
+    text-align: center;
+}
+
+.arena-animation-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    max-width: 32rem;
+    min-height: 16rem;
+    margin-block-end: 2lh;
+}
+
+.arena-result {
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.arena-status-text {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 1.125rem;
+    animation: pulse 2s infinite;
+}
+
+/* Position Context Strip */
+.position-context-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-block-end: 1.5lh;
+    width: 100%;
+}
+
+.position-label {
+    font-size: 0.875rem;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    transition: all 0.3s ease;
+}
+
+.position-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1.5rem;
+    border-radius: 9999px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    white-space: nowrap;
+}
+
+/* Waiting Room */
+.waiting-room {
+    width: 100%;
+    padding: 2rem;
+}
+
+.waiting-room-content {
+    padding: 2rem;
+}
+
+.waiting-room-title {
+    margin-block-end: 1lh;
+}
+
+.waiting-room-pool {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-block-end: 1.5lh;
+}
+
+/* Radar Animation */
+.radar-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin-inline: auto;
+    margin-block-end: 2lh;
+}
+
+.radar-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    opacity: 0.2;
+}
+
+.radar-ripple {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    border-width: 2px;
+    border-style: solid;
+}
+
+.radar-center-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+}
+
+/* Tier Card Styles */
+.tier-card {
+    background: rgba(11, 15, 23, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.tier-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-5px);
+}
+
+.tier-card.selected {
+    border-color: var(--accent-blue);
+}
+
+/* Tier Premium (Legend) - Von Restorff: Lo diferente se recuerda */
+.tier-card.premium {
+    animation: premium-glow 3s ease-in-out infinite;
+}
+
+.tier-card.premium:hover {
+    transform: translateY(-8px) scale(1.02);
+}
+
+@keyframes premium-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+    }
+
+    50% {
+        box-shadow: 0 0 40px rgba(212, 175, 55, 0.25);
+    }
+}
+
+@keyframes premium-shimmer {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.tier-card-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.tier-icon {
+    font-size: 2.5rem;
+    margin-block-end: 0.5lh;
+}
+
+.tier-amount {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.tier-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.tier-players {
+    margin-block-start: 1lh;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Game Page Container */
+.game-page-container {
+    padding-top: 100px;
+    min-height: 80vh;
+}
+
+.game-page-panel {
+    padding: 3rem;
+    text-align: center;
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.game-icon-large {
+    font-size: 4rem;
+    margin-block-end: 1lh;
+}
+
+.game-title-large {
+    font-size: 3rem;
+    margin-block-end: 0.5lh;
+}
+
+/* Result Colors */
+/* Result Colors & Effects */
+.result-win {
+    color: #4ADE80;
+    text-shadow: 0 0 20px rgba(74, 222, 128, 0.4);
+}
+
+.result-loss {
+    color: #F87171;
+    text-shadow: 0 0 20px rgba(248, 113, 113, 0.4);
+}
+
+.result-overlay-backdrop {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;
+    height: 120%;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(60px);
+    opacity: 0.15;
+    border-radius: 50%;
+}
+
+.backdrop-win {
+    background: radial-gradient(circle, #22c55e 0%, transparent 70%);
+}
+
+.backdrop-loss {
+    background: radial-gradient(circle, #ef4444 0%, transparent 70%);
+}
+
+/* Cancel Button */
+.btn-cancel {
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.03);
+    color: #F87171;
+    transition: all 0.3s ease;
+    text-transform: none;
+    letter-spacing: 0.02em;
+}
+
+.btn-cancel:hover {
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 10px rgba(239, 68, 68, 0.4);
+}
+
+/* Provably Fair / Transparency Card */
+.fairness-card {
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-block-start: 2rem;
+    width: 100%;
+    max-width: 440px;
+    margin-inline: auto;
+    text-align: left;
+    transition: all 0.3s ease;
+}
+
+.fairness-card:hover {
+    background: rgba(15, 23, 42, 0.6);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.fairness-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-block-end: 1rem;
+    color: var(--accent-blue);
+}
+
+.fairness-header-title {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.fairness-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.fairness-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.fairness-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+}
+
+.fairness-value-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.fairness-value {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    word-break: break-all;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    flex: 1;
+    line-height: 1.6;
+}
+
+.btn-copy {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-copy:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.fairness-footer {
+    margin-block-start: 1rem;
+    padding-block-start: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    opacity: 0.7;
+}
+
+/* Tooltip System */
+[data-tooltip] {
+    position: relative;
+    cursor: help;
+}
+
+[data-tooltip]:before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    width: 200px;
+    padding: 0.75rem;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 500;
+    line-height: 1.4;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+}
+
+[data-tooltip]:after {
+    content: '';
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    border-width: 6px;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.1) transparent transparent transparent;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+}
+
+[data-tooltip]:hover:before,
+[data-tooltip]:hover:after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.info-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--text-secondary);
+    margin-left: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.info-icon:hover {
+    background: var(--accent-blue);
+    color: white;
+}
+
+/* Responsive styles moved to base/responsive.css */
+
+/* ========================================
+   Light Mode Overrides
+   ======================================== */
+
+[data-theme="light"] .tier-card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .tier-card:hover {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .tier-amount {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .position-pill {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .fairness-card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .fairness-card:hover {
+    background: rgba(255, 255, 255, 0.98);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .fairness-value-group {
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .fairness-value {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .fairness-footer {
+    border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .btn-copy:hover {
+    color: var(--text-primary);
+    background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] [data-tooltip]:before {
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: var(--text-primary);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] [data-tooltip]:after {
+    border-color: rgba(0, 0, 0, 0.08) transparent transparent transparent;
+}
+
+[data-theme="light"] .info-icon {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .info-icon:hover {
+    background: var(--accent-blue);
+    color: white;
+}

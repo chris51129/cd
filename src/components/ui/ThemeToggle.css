@@ -1,0 +1,47 @@
+/* ========================================
+   ThemeToggle - Estilos del botón de tema
+   ======================================== */
+
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    height: auto;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: color var(--transition-fast) ease;
+}
+
+.theme-toggle:hover {
+    color: var(--accent-blue);
+}
+
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 4px;
+}
+
+.theme-toggle:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.theme-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .theme-toggle svg {
+        width: 18px;
+        height: 18px;
+    }
+}

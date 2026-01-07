@@ -1,0 +1,65 @@
+/**
+ * StreakManager - Estilos
+ */
+
+.streak-manager {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.streak-badge {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 165, 0, 0.3);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(255, 165, 0, 0.2);
+}
+
+.streak-fire {
+    font-size: 1.25rem;
+    filter: drop-shadow(0 0 5px orange);
+}
+
+.streak-count {
+    font-weight: 800;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    color: white;
+}
+
+.streak-popup {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.streak-popup.win {
+    background: rgba(34, 197, 94, 0.2);
+    border: 1px solid rgba(34, 197, 94, 0.5);
+    color: #4ADE80;
+}
+
+.streak-popup.win span {
+    font-size: 1.125rem;
+}
+
+.streak-popup.loss {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #F87171;
+}

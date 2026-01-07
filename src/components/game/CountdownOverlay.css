@@ -1,0 +1,39 @@
+/* ========================================
+   CountdownOverlay - Light Mode Support
+   ======================================== */
+
+/* Base overlay - dark mode inline styles son default */
+
+/* Light mode overrides */
+[data-theme="light"] .countdown-overlay {
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(12px) !important;
+}
+
+/* Asegurar visibilidad del texto en modo claro */
+[data-theme="light"] .countdown-overlay>div {
+    color: #0f172a !important;
+}
+
+/* Title con accent color visible */
+[data-theme="light"] .countdown-overlay>div:first-of-type {
+    color: #2563eb !important;
+    text-shadow: 0 0 20px rgba(37, 99, 235, 0.3) !important;
+}
+
+/* Subtitle visible */
+[data-theme="light"] .countdown-overlay>div:nth-of-type(2) {
+    color: #475569 !important;
+    opacity: 0.8 !important;
+}
+
+/* Countdown number con sombra oscura */
+[data-theme="light"] .countdown-overlay>div:nth-of-type(3)>div {
+    color: #1e293b !important;
+    text-shadow: 0 0 30px rgba(37, 99, 235, 0.4) !important;
+}
+
+/* Progress bar background */
+[data-theme="light"] .countdown-overlay>div:nth-of-type(4) {
+    background: rgba(0, 0, 0, 0.1) !important;
+}

@@ -1,0 +1,692 @@
+/* ========================================
+   CryptoDuels - Responsive Styles
+   
+   Archivo centralizado para todos los media queries.
+   Organizado por breakpoints (mobile-first).
+   
+   Breakpoints:
+   - xs: < 480px  (móviles pequeños)
+   - sm: < 640px  (móviles)
+   - md: < 768px  (tablets portrait)
+   - lg: < 1024px (tablets landscape / laptops pequeños)
+   - xl: >= 1024px (desktop)
+   ======================================== */
+
+/* ========================================
+   Extra Small Devices (< 480px)
+   Móviles pequeños
+   ======================================== */
+
+@media (max-width: 479px) {
+
+    /* Typography */
+    .hero-title {
+        font-size: 1.75rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.95rem;
+    }
+
+    /* Transparency page */
+    .info-card {
+        padding: 1rem;
+    }
+
+    .transparency-hero h1 {
+        font-size: 1.5rem;
+    }
+
+    .info-card-title h2 {
+        font-size: 1.25rem;
+    }
+
+    /* Game Rules - Fix text overflow */
+    .rule-item p {
+        font-size: 0.85rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+    }
+}
+
+/* ========================================
+   Small Devices (< 640px)
+   Móviles
+   ======================================== */
+
+@media (max-width: 639px) {
+
+    /* === LAYOUT === */
+    /* === LAYOUT === */
+    .hero-section {
+        height: auto;
+        min-height: 80vh;
+        /* Reduce vertical space */
+        justify-content: flex-start;
+        /* Keep content at top */
+        padding-top: 6rem;
+        /* Space for navbar + margin */
+        padding-bottom: 2rem;
+    }
+
+    /* Scroll Indicator Mobile Adjustment */
+    .scroll-indicator {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        transform: none;
+        margin-top: 3rem;
+        opacity: 0.8;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 0.75rem;
+    }
+
+    .hero-actions .btn-primary,
+    .hero-actions .btn-secondary {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+    }
+
+    /* === TYPOGRAPHY === */
+    .hero-badge {
+        font-size: 0.7rem;
+        padding: 0.35rem 0.9rem;
+    }
+
+    .section-headline,
+    .scandi-title {
+        font-size: var(--text-title);
+    }
+
+    /* === CARDS === */
+    .game-card-inner {
+        padding: 1.25rem;
+    }
+
+    .game-icon-container {
+        height: 5rem;
+        margin-block-end: 1lh;
+    }
+
+    .game-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .game-title {
+        font-size: 1.25rem;
+    }
+
+    .game-desc {
+        font-size: 0.85rem;
+    }
+
+    .game-type {
+        font-size: 0.65rem;
+    }
+
+    /* Choice cards */
+    .choice-card {
+        padding: 2rem 1.5rem;
+        min-width: 100%;
+    }
+
+    .choice-icon {
+        font-size: 3.5rem;
+    }
+
+    .choice-label {
+        font-size: 1.25rem;
+    }
+
+    /* Stat cards */
+    .stat-card {
+        padding: 1.25rem;
+        height: auto;
+        min-height: 8rem;
+    }
+
+    .stat-value {
+        font-size: 1.75rem;
+    }
+
+    .stat-value-scandi {
+        font-size: 2rem;
+    }
+
+    /* Stats grid */
+    .scandi-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    /* === BUTTONS === */
+    .btn-primary,
+    .btn-secondary {
+        font-size: 0.85rem;
+    }
+
+    .hero-btn {
+        padding: 0.65rem 1.5rem;
+        font-size: 0.8rem;
+    }
+
+    .btn-full-mobile {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* === GAME PAGE === */
+    .game-page-container {
+        padding-top: 80px;
+    }
+
+    .game-page-panel {
+        padding: 1.5rem;
+        min-height: auto;
+    }
+
+    .game-icon-large {
+        font-size: 2.5rem;
+    }
+
+    .game-title-large {
+        font-size: 1.75rem;
+    }
+
+    /* Arena */
+    .arena-animation-container {
+        max-width: 100%;
+        min-height: 12rem;
+    }
+
+    /* Position context */
+    .position-context-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .position-pill {
+        font-size: 1rem;
+        padding: 0.4rem 1rem;
+    }
+
+    /* Block Validation Grid - Centrado limpio sin padding override */
+
+    /* Tier cards (in game.css) */
+    .tier-card {
+        padding: 1rem;
+    }
+
+    .tier-amount {
+        font-size: 1.25rem;
+    }
+
+    .tier-icon {
+        font-size: 2rem;
+    }
+
+    /* Fairness card */
+    .fairness-card {
+        padding: 1rem;
+        max-width: 100%;
+    }
+
+    .fairness-value {
+        font-size: 0.65rem;
+    }
+
+    /* Waiting room */
+    .waiting-room {
+        padding: 1rem;
+    }
+
+    .waiting-room-content {
+        padding: 1rem;
+    }
+
+    .waiting-room-pool {
+        font-size: 1.5rem;
+    }
+
+    .radar-container {
+        width: 80px;
+        height: 80px;
+    }
+
+    /* === GAME RULES (Fix overflow) === */
+    .rule-item {
+        padding: 0 0.5rem;
+    }
+
+    .rule-item p {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    /* === CATEGORY TABS === */
+    .category-tabs-container {
+        padding-inline: 0px;
+        width: 100vw;
+        margin-left: -1rem;
+        /* Counteract container padding */
+    }
+
+    .category-tabs {
+        gap: 0.2rem;
+        overflow-x: auto;
+        padding: 0.25rem 0.5rem;
+        -webkit-overflow-scrolling: touch;
+        justify-content: flex-start;
+        /* Ensure start alignment */
+        flex-wrap: nowrap;
+        /* Prevent wrapping */
+    }
+
+    .category-tab {
+        font-size: 0.55rem;
+        padding: 0.3rem 0.6rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+        gap: 0.3rem;
+        /* Space between icon and text */
+    }
+
+    .category-tab svg {
+        width: 12px;
+        height: 12px;
+    }
+
+    /* === TIER SELECTOR CAROUSEL === */
+    .carousel-wrapper {
+        padding: 0 2.5rem;
+    }
+
+    .carousel-arrow {
+        width: 32px;
+        height: 32px;
+    }
+
+    .carousel-arrow-left {
+        left: 0;
+    }
+
+    .carousel-arrow-right {
+        right: 0;
+    }
+
+    .tier-card-carousel {
+        min-height: 180px;
+        padding: 1.25rem 0.75rem;
+    }
+
+    .tier-amount {
+        font-size: 1.5rem;
+    }
+
+    .tier-badge {
+        font-size: 0.45rem;
+        padding: 2px 6px;
+    }
+
+    .tier-selection-info {
+        min-height: 80px;
+    }
+
+    .tier-pot-info {
+        font-size: 0.75rem;
+    }
+
+    /* === ARENA RESULTS (Duel outcome) === */
+    .arena-result {
+        padding: 1.5rem 1rem;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+    .arena-result h2 {
+        font-size: 1.75rem !important;
+        word-wrap: break-word;
+        padding: 0 0.5rem;
+    }
+
+    .arena-result .text-5xl {
+        font-size: 1.75rem !important;
+    }
+
+    .arena-result .text-xl {
+        font-size: 0.9rem !important;
+        padding: 0 1rem;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .arena-result .flex-center {
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 100%;
+        padding: 0 1rem;
+    }
+
+    .arena-result .hero-btn {
+        width: 100%;
+        max-width: 280px;
+        font-size: 0.8rem;
+    }
+
+    .result-win,
+    .result-loss {
+        font-size: 1.75rem !important;
+    }
+
+    /* Fairness Card in results - Full width */
+    .fairness-card {
+        margin: 1rem 0 !important;
+        padding: 1.25rem 1rem !important;
+        width: 100% !important;
+        max-width: none !important;
+        box-sizing: border-box;
+        overflow: visible;
+    }
+
+    .fairness-header {
+        font-size: 0.85rem;
+        margin-bottom: 1.25rem;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .fairness-header-title {
+        font-size: 0.8rem;
+    }
+
+    .fairness-body {
+        padding: 0.5rem 0 !important;
+        overflow: visible;
+        box-sizing: border-box;
+        gap: 1.25rem;
+    }
+
+    .fairness-item {
+        margin-bottom: 1.25rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        overflow: visible;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .fairness-label {
+        font-size: 0.75rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .fairness-value {
+        font-size: 0.8rem !important;
+        word-break: break-all;
+        overflow-wrap: anywhere;
+        white-space: normal !important;
+        text-overflow: clip !important;
+        max-width: 100%;
+        line-height: 1.6;
+        padding: 0.75rem;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .fairness-value-group {
+        width: 100%;
+        max-width: 100%;
+        overflow: visible;
+        box-sizing: border-box;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
+
+    /* Título de resultado descriptivo */
+    .arena-result p {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 100%;
+        padding: 0 1rem;
+        box-sizing: border-box;
+    }
+
+    .fairness-footer {
+        font-size: 0.75rem;
+        padding: 1rem 0 0;
+        line-height: 1.6;
+        text-align: center;
+    }
+}
+
+/* ========================================
+   Medium Devices (640px - 767px)
+   Móviles grandes / Tablets portrait
+   ======================================== */
+
+@media (min-width: 640px) and (max-width: 767px) {
+    .games-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .game-card-inner {
+        padding: 1.5rem;
+    }
+
+    .game-icon-container {
+        height: 6rem;
+    }
+
+    .choice-card {
+        padding: 2.5rem 1.5rem;
+    }
+}
+
+/* ========================================
+   Tablet Devices (768px - 1023px)
+   ======================================== */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.15rem;
+    }
+
+    .game-page-panel {
+        padding: 2rem;
+    }
+
+    .arena-animation-container {
+        max-width: 28rem;
+    }
+
+    .games-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ========================================
+   Large Devices (>= 768px)
+   Desktop styles (what was in individual files)
+   ======================================== */
+
+@media (min-width: 768px) {
+    .hero-title {
+        font-size: 3.78rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+    }
+
+    /* Visibility utilities */
+    .hidden-mobile {
+        display: block;
+    }
+
+    .hidden-desktop {
+        display: none;
+    }
+
+    /* Stack layout */
+    .stack-mobile {
+        flex-direction: row;
+    }
+}
+
+/* ========================================
+   Extra Large Devices (>= 1024px)
+   Desktop
+   ======================================== */
+
+@media (min-width: 1024px) {
+    .games-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .grid-responsive {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ========================================
+   Transparency Page Specific
+   ======================================== */
+
+@media (max-width: 768px) {
+    .info-card {
+        padding: 1.5rem;
+    }
+
+    .info-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .transparency-hero h1 {
+        font-size: 2rem;
+    }
+
+    .transparency-hero p {
+        font-size: 1rem;
+    }
+
+    .info-card-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .tech-pill {
+        font-size: 0.7rem;
+        padding: 0.35rem 0.6rem;
+    }
+
+    .fairness-diagram {
+        padding: 1rem;
+        gap: 0.75rem;
+    }
+
+    .diagram-step {
+        font-size: 0.85rem;
+    }
+}
+
+/* ========================================
+   Chainlink VRF Page
+   ======================================== */
+
+@media (max-width: 640px) {
+    .vrf-hero h1 {
+        font-size: 2rem;
+    }
+
+    .vrf-section {
+        padding: 2rem 1rem;
+    }
+
+    .vrf-card {
+        padding: 1.5rem;
+    }
+
+    /* Chainlink VRF Specs & Diagrams */
+    .tech-spec-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .spec-value {
+        word-break: break-all;
+        font-size: 0.8rem;
+    }
+
+    .vrf-flow-diagram {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .vrf-arrow-v {
+        transform: rotate(90deg);
+        /* If horizontal by default */
+        margin: 0.5rem 0;
+    }
+
+    /* Transparency Diagrams */
+    .fairness-diagram {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .diagram-step {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+/* ========================================
+   Print Styles
+   ======================================== */
+
+@media print {
+
+    .navbar,
+    .footer,
+    .ambient-light,
+    .carousel-arrow,
+    .carousel-dots {
+        display: none !important;
+    }
+
+    body {
+        background: white;
+        color: black;
+    }
+
+    .hero-section {
+        height: auto;
+        min-height: auto;
+    }
+}

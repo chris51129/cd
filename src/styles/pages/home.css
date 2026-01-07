@@ -1,0 +1,349 @@
+/* ========================================
+   CryptoDuels - Home Page Styles
+   ======================================== */
+
+/* Hero Section */
+.hero-section {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    text-align: center;
+    padding: 0 1rem;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 60rem;
+}
+
+.hero-badge {
+    display: inline-block;
+    margin-block-end: 1rem;
+    padding: 0.45rem 1.15rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.12);
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    color: #FFFFFF;
+    font-weight: 800;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+}
+
+.hero-title {
+    font-size: 2.2rem;
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-block-start: 0;
+    margin-block-end: 0.5lh;
+    color: white;
+}
+
+@media (min-width: 768px) {
+    .hero-title {
+        font-size: 3.78rem;
+    }
+}
+
+.hero-subtitle {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    max-width: 36rem;
+    margin-inline: auto;
+    margin-block-end: 2.5lh;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+    .hero-subtitle {
+        font-size: 1.25rem;
+    }
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+/* Ambient Lights */
+.ambient-light {
+    position: absolute;
+    width: 60vw;
+    height: 60vw;
+    border-radius: 50%;
+    filter: blur(140px);
+    opacity: 0.05;
+    pointer-events: none;
+}
+
+.ambient-light.blue {
+    top: -20%;
+    left: -10%;
+    background-color: var(--accent-blue);
+}
+
+.ambient-light.gold {
+    bottom: -20%;
+    right: -10%;
+    background-color: var(--accent-gold);
+    opacity: 0.05;
+}
+
+/* Feature Section */
+.feature-section {
+    padding: var(--spacing-xl) 1rem var(--spacing-lg);
+    max-width: 80rem;
+    margin: 0 auto;
+}
+
+/* Scandinavian Minimalist Panels */
+.scandi-panel {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(24px);
+    border-radius: 2px;
+    padding: 3rem;
+    position: relative;
+    border: 0.5px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scandi-panel:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.stat-icon-scandi {
+    color: rgba(255, 255, 255, 0.4);
+    margin-block-end: 1.5rem;
+    transition: all 0.4s ease;
+}
+
+.scandi-panel:hover .stat-icon-scandi {
+    color: var(--accent-blue);
+    transform: translateY(-2px);
+}
+
+.stat-value-scandi {
+    font-size: 2.75rem;
+    font-weight: 400;
+    color: white;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-block-end: 0.5rem;
+}
+
+.scandi-count {
+    font-weight: 500;
+}
+
+.stat-label-scandi {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+}
+
+.scandi-border-refined {
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    width: 0%;
+    height: 1px;
+    background: var(--accent-blue);
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1), left 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 0.5;
+}
+
+.scandi-panel:hover .scandi-border-refined {
+    width: 80%;
+}
+
+/* Leaderboard Scandi */
+.scandi-display {
+    text-align: center;
+    padding: 6rem 2rem;
+}
+
+.scandi-title {
+    font-size: 2.25rem;
+    font-weight: 200;
+    letter-spacing: 0.1em;
+    color: white;
+    margin-block-end: 1rem;
+}
+
+.scandi-subtitle {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-block-end: 5rem;
+    opacity: 0.7;
+}
+
+.scandi-tech-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4rem;
+}
+
+.scandi-icons {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    opacity: 1;
+    /* Eliminada opacidad 0.15 */
+}
+
+.scandi-v-line {
+    width: 0.5px;
+    height: 40px;
+    background: white;
+}
+
+.scandi-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.65rem 1.5rem;
+    border: 0.5px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.scandi-dot {
+    width: 4px;
+    height: 4px;
+    background: var(--accent-blue);
+    border-radius: 50%;
+}
+
+.scandi-status {
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.3em;
+    color: white;
+}
+
+.scandi-info {
+    margin-block-start: 1.5rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.4);
+    max-width: 320px;
+    line-height: 1.7;
+    font-weight: 300;
+}
+
+.scandi-footer {
+    padding-block: 2rem;
+    border-top: 0.5px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.4em;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+/* Vertical Rhythm & Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-block-end: 8rem;
+}
+
+@media (min-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.games-header {
+    margin-block-end: 4rem;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    margin-block-end: 1rem;
+}
+
+.section-subtitle {
+    color: rgba(255, 255, 255, 0.4);
+    max-width: 24rem;
+    margin-inline: auto;
+    font-weight: 300;
+    margin-block-end: 3rem;
+}
+
+/* Scandi Category Tabs */
+.category-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-block-end: 4rem;
+    position: relative;
+}
+
+.category-tab {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    transition: color 0.4s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.category-tab:hover,
+.category-tab.active {
+    color: white;
+}
+
+.category-tab-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.05);
+    /* Hidden or very subtle baseline */
+    z-index: 0;
+}
+
+.category-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    right: 20%;
+    height: 1px;
+    background: var(--accent-blue);
+    box-shadow: 0 0 10px rgba(46, 92, 255, 0.3);
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+/* Responsive styles moved to base/responsive.css */

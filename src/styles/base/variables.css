@@ -1,0 +1,111 @@
+/* ========================================
+   CryptoDuels - Design Tokens
+   ======================================== */
+
+:root {
+   /* Colors - Dark Mode (Default) */
+   --bg-deep: #1C1C1E;
+   --bg-surface: #0B0F17;
+   --bg-surface-hover: #0F141E;
+   --text-primary: #F5F5F7;
+   --text-secondary: #86868B;
+   --accent-blue: #2E5CFF;
+   --accent-gold: #D4AF37;
+   --text-muted: rgba(255, 255, 255, 0.2);
+
+   /* Typography */
+   --font-sans: 'Inter', sans-serif;
+   --font-heading: 'Manrope', sans-serif;
+   --text-xs: 0.75rem;
+   --text-sm: 0.875rem;
+   --text-base: 1rem;
+   --text-lg: 1.25rem;
+   --text-xl: 1.5rem;
+   --text-2xl: 2rem;
+
+   /* Spacing Scale */
+   --spacing-xs: 0.5rem;
+   --spacing-sm: 1rem;
+   --spacing-md: 2rem;
+   --spacing-lg: 4rem;
+   --spacing-xl: 8rem;
+
+   /* Border Radius */
+   --radius-sm: 0.5rem;
+   --radius-md: 1rem;
+   --radius-lg: 1.5rem;
+   --radius-full: 9999px;
+
+   /* Component Dimensions */
+   --arena-height: 300px;
+   --card-min-height: 180px;
+
+   /* Animation */
+   --transition-slow: 0.8s;
+   --transition-normal: 0.3s;
+   --transition-fast: 0.1s;
+
+   /* Opacity helpers */
+   --bg-overlay: rgba(11, 15, 23, 0.6);
+   --bg-overlay-dark: rgba(2, 4, 8, 0.8);
+
+   /* Shadows */
+   --shadow-glow-blue: 0 0 20px rgba(46, 92, 255, 0.1);
+   --shadow-glow-white: 0 0 20px rgba(255, 255, 255, 0.1);
+   --shadow-glow-gold: 0 0 20px rgba(212, 175, 55, 0.1);
+
+   /* =========================================
+       Responsive Typography (Fluid)
+       ========================================= */
+   --text-hero: clamp(2rem, 5vw + 1rem, 4rem);
+   --text-title: clamp(1.5rem, 3vw + 0.5rem, 2.5rem);
+   --text-subtitle: clamp(1rem, 2vw + 0.25rem, 1.5rem);
+
+   /* =========================================
+       Responsive Spacing (Fluid)
+       ========================================= */
+   --spacing-section: clamp(2rem, 5vw, 4rem);
+   --spacing-container: clamp(1rem, 3vw, 2rem);
+   --padding-card: clamp(1rem, 2vw, 2rem);
+
+   /* =========================================
+       Breakpoints (for reference in JS)
+       ========================================= */
+   --breakpoint-sm: 640px;
+   --breakpoint-md: 768px;
+   --breakpoint-lg: 1024px;
+   --breakpoint-xl: 1280px;
+
+   /* =========================================
+       Container Widths
+       ========================================= */
+   --container-sm: 640px;
+   --container-md: 768px;
+   --container-lg: 1024px;
+   --container-xl: 1200px;
+}
+
+/* ========================================
+   Light Mode - Minimalista Escandinavo
+   ======================================== */
+
+[data-theme="light"] {
+   /* Colors - Light Mode */
+   --bg-deep: #FAFBFC;
+   --bg-surface: #FFFFFF;
+   --bg-surface-hover: #F5F7FA;
+   --text-primary: #1A1D21;
+   --text-secondary: #5C6370;
+   --accent-blue: #2E5CFF;
+   --accent-gold: #B8860B;
+   --text-muted: rgba(0, 0, 0, 0.12);
+
+   /* Opacity helpers - Light */
+   --bg-overlay: rgba(255, 255, 255, 0.85);
+   --bg-overlay-dark: rgba(250, 251, 252, 0.95);
+
+   /* Shadows - Light Mode (sutiles, estilo escandinavo) */
+   --shadow-glow-blue: 0 4px 24px rgba(46, 92, 255, 0.12);
+   --shadow-glow-white: 0 4px 20px rgba(0, 0, 0, 0.06);
+   --shadow-glow-gold: 0 4px 20px rgba(184, 134, 11, 0.1);
+}

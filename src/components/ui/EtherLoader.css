@@ -1,0 +1,87 @@
+.ether-loader-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+    pointer-events: none;
+    /* CRÍTICO: No bloquear interacción con elementos de fondo */
+    z-index: 5;
+}
+
+.ether-core {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ether-particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: var(--accent-blue);
+    box-shadow: 0 0 15px var(--accent-blue);
+    border-radius: 2px;
+}
+
+.ether-center-glow {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-blue);
+    filter: blur(25px);
+    opacity: 0.5;
+    border-radius: 50%;
+    animation: ether-pulse 2s infinite ease-in-out;
+}
+
+.ether-message {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    color: var(--accent-blue);
+    text-transform: uppercase;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(46, 92, 255, 0.5);
+}
+
+.ether-scanline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(46, 92, 255, 0.1);
+    box-shadow: 0 0 10px rgba(46, 92, 255, 0.2);
+    animation: ether-scan 3s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes ether-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.5);
+        opacity: 0.8;
+    }
+}
+
+@keyframes ether-scan {
+    0% {
+        top: -10%;
+    }
+
+    100% {
+        top: 110%;
+    }
+}

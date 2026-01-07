@@ -1,0 +1,410 @@
+/* ========================================
+   CryptoDuels - Cards
+   ======================================== */
+
+/* Game Cards */
+.game-card-wrapper {
+    padding: 1px;
+    border-radius: 1rem;
+    cursor: pointer;
+    /* UMBRAL DE DOHERTY: Transición rápida < 100ms para feedback inmediato */
+    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, opacity 0.6s ease-out;
+    background: transparent;
+    position: relative;
+    overflow: hidden;
+    opacity: 1;
+}
+
+@starting-style {
+    .game-card-wrapper {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+/* Cursor Glow Effect - Iluminación que sigue al cursor */
+/* Capa 1: Border Glow - Borde luminoso que sigue al cursor */
+.game-card-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(350px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+            rgba(255, 255, 255, 0.08),
+            transparent 40%);
+    opacity: 0;
+    /* UMBRAL DE DOHERTY: Transición rápida */
+    transition: opacity 0.2s ease-out;
+    pointer-events: none;
+    z-index: 0;
+    border-radius: inherit;
+}
+
+/* Capa 2: Border Highlight - Efecto de borde brillante */
+.game-card-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: radial-gradient(300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+            rgba(255, 255, 255, 0.4),
+            transparent 40%);
+    opacity: 0;
+    /* UMBRAL DE DOHERTY: Transición rápida */
+    transition: opacity 0.2s ease-out;
+    pointer-events: none;
+    z-index: -1;
+    border-radius: inherit;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    padding: 1px;
+}
+
+.game-card-wrapper:hover::before,
+.game-card-wrapper:hover::after {
+    opacity: 1;
+}
+
+.game-card-wrapper:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+}
+
+.game-card-wrapper:active {
+    transform: scale(0.98);
+}
+
+.game-card-inner {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 1rem;
+    padding: 2rem;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s ease, border-color 0.3s ease;
+    box-sizing: border-box;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.game-card-wrapper:hover .game-card-inner {
+    background: linear-gradient(180deg, rgba(46, 92, 255, 1.0) 0%, rgba(11, 15, 23, 0.9) 100%);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.game-status {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 1rem;
+    opacity: 0.5;
+}
+
+.status-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: var(--accent-blue);
+    box-shadow: 0 0 10px var(--accent-blue);
+}
+
+/* ========================================
+   Von Restorff Badges - NEW/HOT
+   Lo diferente se recuerda mejor
+   ======================================== */
+
+.game-badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    z-index: 10;
+    animation: badge-pulse 2s ease-in-out infinite;
+}
+
+.badge-icon {
+    font-size: 0.8rem;
+}
+
+.badge-label {
+    line-height: 1;
+}
+
+/* Badge NEW - Plata Minimalista */
+.badge-new {
+    background: white;
+    color: black;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}
+
+/* Badge HOT - Óxido Rubí */
+.badge-hot {
+    background: #D64933;
+    color: white;
+    box-shadow: 0 4px 15px rgba(214, 73, 51, 0.3);
+}
+
+/* Cards con badge tienen borde especial */
+.game-card-wrapper.has-badge {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.game-card-wrapper.has-badge::after {
+    opacity: 0.3;
+}
+
+/* Animación sutil de pulso */
+@keyframes badge-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.game-icon-container {
+    height: 8rem;
+    margin-block-end: 1.5lh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, rgba(46, 92, 255, 0.05) 0%, transparent 70%);
+    border-radius: 0.5rem;
+}
+
+.game-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+}
+
+.game-card-wrapper:hover .game-icon {
+    transform: scale(1.15);
+    background-color: white;
+    color: var(--accent-blue);
+    border-color: white;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+.game-type {
+    font-size: 0.75rem;
+    color: var(--accent-blue);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-block-end: 0.5lh;
+}
+
+.game-title {
+    font-size: 1.75rem;
+    margin-block-end: 0.5lh;
+    color: white;
+    font-weight: 600;
+}
+
+.game-desc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Stat Cards */
+.stat-card {
+    padding: 2rem;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 12rem;
+    opacity: 1;
+    transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@starting-style {
+    .stat-card {
+        opacity: 0;
+        transform: scale(0.9) translateY(30px);
+    }
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 500;
+    margin-block-end: 0.5lh;
+    color: white;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Choice Cards */
+.choice-card {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 3rem 2rem;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    min-width: 200px;
+}
+
+/* Heads = Gold */
+.choice-card.heads {
+    background: linear-gradient(145deg, rgba(255, 215, 0, 0.05) 0%, rgba(11, 15, 23, 0.4) 100%);
+    border: 1px solid rgba(255, 215, 0, 0.1);
+}
+
+.choice-card.heads:hover {
+    background: linear-gradient(145deg, rgba(255, 215, 0, 0.15) 0%, rgba(11, 15, 23, 0.6) 100%);
+    border-color: #FFD700;
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.15), inset 0 0 20px rgba(255, 215, 0, 0.05);
+    transform: translateY(-5px) scale(1.02);
+}
+
+.choice-card.heads .choice-icon {
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+}
+
+/* Tails = Silver/Royal */
+.choice-card.tails {
+    background: linear-gradient(145deg, rgba(229, 231, 235, 0.05) 0%, rgba(11, 15, 23, 0.4) 100%);
+    border: 1px solid rgba(229, 231, 235, 0.1);
+}
+
+.choice-card.tails:hover {
+    background: linear-gradient(145deg, rgba(229, 231, 235, 0.15) 0%, rgba(11, 15, 23, 0.6) 100%);
+    border-color: #E5E7EB;
+    box-shadow: 0 0 40px rgba(229, 231, 235, 0.15), inset 0 0 20px rgba(229, 231, 235, 0.05);
+    transform: translateY(-5px) scale(1.02);
+}
+
+.choice-card.tails .choice-icon {
+    text-shadow: 0 0 30px rgba(229, 231, 235, 0.4);
+}
+
+.choice-icon {
+    font-size: 5rem;
+    filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+    transition: transform 0.3s;
+}
+
+.choice-card:hover .choice-icon {
+    transform: scale(1.1);
+}
+
+.choice-label {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: white;
+}
+
+.choice-sub {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--text-secondary);
+}
+
+
+/* RPS Cards */
+.choice-card.rock {
+    background: linear-gradient(145deg, rgba(148, 163, 184, 0.05) 0%, rgba(11, 15, 23, 0.4) 100%);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.choice-card.rock:hover {
+    background: linear-gradient(145deg, rgba(148, 163, 184, 0.15) 0%, rgba(11, 15, 23, 0.6) 100%);
+    border-color: #94A3B8;
+    box-shadow: 0 0 40px rgba(148, 163, 184, 0.15), inset 0 0 20px rgba(148, 163, 184, 0.05);
+    transform: translateY(-5px) scale(1.02);
+}
+
+.choice-card.paper {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(11, 15, 23, 0.4) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.choice-card.paper:hover {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.15) 0%, rgba(11, 15, 23, 0.6) 100%);
+    border-color: #FFFFFF;
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.05);
+    transform: translateY(-5px) scale(1.02);
+}
+
+.choice-card.scissors {
+    background: linear-gradient(145deg, rgba(239, 68, 68, 0.05) 0%, rgba(11, 15, 23, 0.4) 100%);
+    border: 1px solid rgba(239, 68, 68, 0.1);
+}
+
+.choice-card.scissors:hover {
+    background: linear-gradient(145deg, rgba(239, 68, 68, 0.15) 0%, rgba(11, 15, 23, 0.6) 100%);
+    border-color: #EF4444;
+    box-shadow: 0 0 40px rgba(239, 68, 68, 0.15), inset 0 0 20px rgba(239, 68, 68, 0.05);
+    transform: translateY(-5px) scale(1.02);
+}
+
+/* Tier Grid */
+.tier-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    margin-block-end: 2lh;
+}
+
+/* Responsive styles moved to base/responsive.css */
+
+/* ========================================
+   Light Mode Overrides (Additional)
+   ======================================== */
+
+[data-theme="light"] .game-card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .game-card:hover {
+    background: rgba(255, 255, 255, 0.98);
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .game-card-title {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .choice-label {
+    color: var(--text-primary);
+}

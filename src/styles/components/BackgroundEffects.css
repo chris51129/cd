@@ -1,0 +1,114 @@
+/* ========================================
+   Background Effects - Scandinavian Tech
+   Atmósfera minimalista y sofisticada
+   ======================================== */
+
+.bg-ambient-layer {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    background: #000205;
+    /* Deepest blue-black anchor */
+}
+
+/* Subtlest Mesh Gradient */
+.mesh-gradient {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background-image:
+        radial-gradient(at 0% 0%, hsla(227, 100%, 50%, 0.02) 0, transparent 50%),
+        radial-gradient(at 50% 0%, hsla(220, 100%, 70%, 0.01) 0, transparent 50%),
+        radial-gradient(at 100% 0%, hsla(227, 100%, 50%, 0.02) 0, transparent 50%),
+        radial-gradient(at 0% 100%, hsla(227, 100%, 50%, 0.02) 0, transparent 50%),
+        radial-gradient(at 100% 100%, hsla(227, 100%, 50%, 0.02) 0, transparent 50%);
+    opacity: 0.15;
+    filter: blur(100px);
+    animation: background-drift 80s linear infinite;
+}
+
+@keyframes background-drift {
+    0% {
+        transform: rotate(0deg) scale(1.0);
+    }
+
+    50% {
+        transform: rotate(2deg) scale(1.05);
+    }
+
+    100% {
+        transform: rotate(0deg) scale(1.0);
+    }
+}
+
+/* Ultra-Fine Scanline Overlay */
+.scanline-overlay {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(to bottom,
+            transparent 50%,
+            rgba(255, 255, 255, 0.0015) 50%);
+    background-size: 100% 3px;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0.1;
+}
+
+/* Whisper Lights */
+.bg-light {
+    position: absolute;
+    width: 1000px;
+    height: 1000px;
+    border-radius: 50%;
+    filter: blur(200px);
+    opacity: 0.06;
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
+
+.light-1 {
+    top: -30%;
+    left: -15%;
+    background: radial-gradient(circle, var(--accent-blue) 0%, transparent 80%);
+    animation: light-pulse-1 30s ease-in-out infinite;
+}
+
+.light-2 {
+    bottom: -30%;
+    right: -15%;
+    background: radial-gradient(circle, #D4AF37 0%, transparent 80%);
+    opacity: 0.04;
+    animation: light-pulse-2 35s ease-in-out infinite alternate;
+}
+
+@keyframes light-pulse-1 {
+
+    0%,
+    100% {
+        transform: scale(1) translate(0, 0);
+        opacity: 0.06;
+    }
+
+    50% {
+        transform: scale(1.1) translate(5%, 5%);
+        opacity: 0.08;
+    }
+}
+
+@keyframes light-pulse-2 {
+
+    0%,
+    100% {
+        transform: scale(1) translate(0, 0);
+        opacity: 0.04;
+    }
+
+    50% {
+        transform: scale(1.15) translate(-5%, -5%);
+        opacity: 0.06;
+    }
+}

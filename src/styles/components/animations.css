@@ -1,0 +1,103 @@
+/* ========================================
+   CryptoDuels - Animations
+   ======================================== */
+
+/* Scroll Indicator Animation */
+@keyframes scroll {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(12px);
+        opacity: 0;
+    }
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animation Classes */
+.animate-pulse {
+    animation: pulse 2s infinite;
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0.5;
+}
+
+.mouse-icon {
+    width: 20px;
+    height: 32px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    padding-top: 6px;
+}
+
+.wheel {
+    width: 2px;
+    height: 6px;
+    background-color: white;
+    border-radius: 2px;
+    animation: scroll 1.5s infinite;
+}
+
+.scroll-text {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--text-secondary);
+}
+
+/* ========================================
+   Light Mode - Scroll Indicator
+   ======================================== */
+[data-theme="light"] .mouse-icon {
+    border-color: rgba(15, 23, 42, 0.3);
+}
+
+[data-theme="light"] .wheel {
+    background-color: #1e293b;
+}
+
+[data-theme="light"] .scroll-text {
+    color: var(--text-secondary);
+}

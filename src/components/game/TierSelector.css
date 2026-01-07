@@ -1,0 +1,316 @@
+/* ========================================
+   TierSelector Carousel Styles
+   ======================================== */
+
+.tier-selector-carousel {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 1rem 0;
+    overflow-anchor: none;
+    /* Prevent browser auto-scroll on content change */
+}
+
+/* =========================================
+   Carousel Container
+   ========================================= */
+
+.carousel-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 0 3rem;
+    contain: strict;
+    /* Fully isolate from page layout */
+    height: 300px;
+    /* Fixed height required for contain: strict */
+}
+
+.carousel-viewport {
+    width: 100%;
+    height: 100%;
+    padding: 1rem 0 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel-track {
+    display: flex;
+    gap: 20px;
+    cursor: grab;
+    touch-action: pan-x;
+}
+
+.carousel-track:active {
+    cursor: grabbing;
+}
+
+.carousel-slide {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    padding-top: 5px;
+    /* Minimal space, badges are inside now */
+}
+
+/* =========================================
+   Tier Card (Carousel version)
+   ========================================= */
+
+.tier-card-carousel {
+    width: 100%;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 2rem 1rem 1.5rem;
+    /* Extra top padding for badges */
+    border-radius: var(--radius-md);
+    position: relative;
+    overflow: visible;
+    cursor: pointer;
+    user-select: none;
+}
+
+.tier-icon-wrapper {
+    margin-bottom: 0.75rem;
+}
+
+.tier-amount {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 2rem;
+    color: var(--text-primary);
+}
+
+.tier-label {
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+    font-weight: 600;
+    text-transform: none;
+}
+
+.tier-players {
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.tier-players .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--accent-blue);
+    box-shadow: 0 0 8px var(--accent-blue);
+}
+
+/* Badges */
+.tier-badge {
+    position: absolute;
+    top: 10px;
+    font-size: 0.5rem;
+    font-weight: 800;
+    padding: 3px 7px;
+    border-radius: 9px;
+    letter-spacing: 0.03em;
+    z-index: 10;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.tier-badge-premium {
+    left: 10px;
+    background: linear-gradient(135deg, #D4AF37, #FFD700, #D4AF37);
+    color: #000;
+    box-shadow: 0 2px 10px rgba(212, 175, 55, 0.4);
+}
+
+.tier-badge-popular {
+    right: 10px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+}
+
+.tier-selected-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    border-radius: inherit;
+}
+
+/* =========================================
+   Navigation Arrows
+   ========================================= */
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-surface);
+    border: 1px solid var(--text-muted);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-arrow:hover:not(:disabled) {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: white;
+    box-shadow: 0 4px 16px rgba(46, 92, 255, 0.3);
+}
+
+.carousel-arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.carousel-arrow-left {
+    left: 0;
+}
+
+.carousel-arrow-right {
+    right: 0;
+}
+
+/* =========================================
+   Dot Indicators
+   ========================================= */
+
+.carousel-dots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    padding: 0.5rem 0;
+}
+
+.carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: none;
+    background: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.carousel-dot:hover {
+    background: var(--text-secondary);
+    transform: scale(1.2);
+}
+
+.carousel-dot.active {
+    background: var(--accent-blue);
+    width: 24px;
+    border-radius: 4px;
+    box-shadow: 0 0 8px rgba(46, 92, 255, 0.4);
+}
+
+/* =========================================
+   Selection Info
+   ========================================= */
+
+.tier-selection-info {
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+}
+
+.tier-confirmation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.tier-pot-info {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.tier-pot-info strong {
+    color: var(--text-primary);
+}
+
+.tier-pot-info .text-success {
+    color: #4ade80;
+}
+
+.tier-commission {
+    margin-left: 0.5rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+/* =========================================
+   Responsive
+   ========================================= */
+
+@media (max-width: 640px) {
+    .carousel-wrapper {
+        padding: 0 3rem;
+    }
+
+    .carousel-arrow {
+        width: 32px;
+        height: 32px;
+    }
+
+    .tier-card-carousel {
+        min-height: 200px;
+        padding: 1.25rem 0.75rem;
+    }
+
+    .tier-amount {
+        font-size: 1.75rem;
+    }
+}
+
+/* =========================================
+   Animations
+   ========================================= */
+
+@keyframes premium-shimmer {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}

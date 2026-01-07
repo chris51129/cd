@@ -1,0 +1,196 @@
+/* ========================================
+   Transparency Page Styles
+   Estética "Scandinavian Tech" Premium
+   ======================================== */
+
+.transparency-container {
+    padding-block-start: 120px;
+    padding-block-end: 100px;
+    max-width: 1000px;
+    margin-inline: auto;
+    padding-inline: 2rem;
+}
+
+.transparency-hero {
+    text-align: center;
+    margin-block-end: 5rem;
+}
+
+.transparency-hero h1 {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-block-end: 1.5rem;
+}
+
+.transparency-hero p {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin-inline: auto;
+}
+
+/* Grid de Secciones */
+.transparency-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+}
+
+.transparency-section {
+    position: relative;
+}
+
+/* Glassmorphism Card */
+.info-card {
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.info-card:hover {
+    background: rgba(15, 23, 42, 0.6);
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+}
+
+.info-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.info-card-icon {
+    width: 64px;
+    height: 64px;
+    background: rgba(46, 92, 255, 0.1);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-blue);
+    flex-shrink: 0;
+}
+
+.info-card-title {
+    margin: 0;
+}
+
+.info-card-title h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-block-end: 0.25rem;
+}
+
+.info-card-title span {
+    font-size: 0.75rem;
+    color: var(--accent-blue);
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.info-card-content {
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.info-card-content p {
+    margin-block-end: 1.5rem;
+}
+
+.info-card-content p:last-child {
+    margin-block-end: 0;
+}
+
+/* Tech Highlights (Pills) */
+.tech-highlights {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-block-start: 1rem;
+}
+
+.tech-pill {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 0.5rem 1rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tech-pill strong {
+    color: white;
+}
+
+/* Visual Assets / Simplified Diagrams */
+.fairness-diagram {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 16px;
+    padding: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.diagram-step {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.diagram-arrow {
+    color: var(--accent-blue);
+    opacity: 0.5;
+}
+
+/* Responsive styles moved to base/responsive.css */
+
+/* ========================================
+   Light Mode Overrides
+   ======================================== */
+
+[data-theme="light"] .info-card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .info-card:hover {
+    background: rgba(255, 255, 255, 0.98);
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .info-card-content {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .tech-pill {
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .tech-pill strong {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .fairness-diagram {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.08);
+}

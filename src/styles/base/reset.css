@@ -1,0 +1,82 @@
+/* ========================================
+   CryptoDuels - CSS Reset & Base
+   ======================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.5;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* ========================================
+   Accessibility - Focus Visible
+   Only show focus ring on keyboard navigation
+   ======================================== */
+
+/* Remove default outline for mouse users */
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* Visible focus ring for keyboard users */
+:focus-visible {
+    outline: 2px solid var(--neon-blue, #2E5CFF);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Enhanced focus for interactive elements */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible:not([tabindex="-1"]) {
+    outline: 2px solid var(--neon-blue, #2E5CFF);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(46, 92, 255, 0.2);
+}
+
+/* Skip to content link (hidden until focused) */
+.skip-to-content {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-card, #1a1a2e);
+    color: var(--text-primary, #fff);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0 0 8px 8px;
+    text-decoration: none;
+    font-weight: 600;
+    z-index: 10000;
+    transition: top 0.2s ease;
+}
+
+.skip-to-content:focus {
+    top: 0;
+}

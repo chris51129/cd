@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CryptoDuels | Duelos P2P y Competición Algorítmica</title>
+  <meta name="description"
+    content="CryptoDuels es un protocolo descentralizado de competición P2P. Basado en habilidad y probabilidad verificable, sin custodios ni intermediarios." />
+
+  <!-- OWASP A05:2021 - Security Misconfiguration Prevention -->
+  <!-- Content Security Policy - Prevents XSS and data injection attacks -->
+  <!-- NOTE: frame-ancestors must be set via HTTP header in production (Nginx/Cloudflare) -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com;
+    img-src 'self' data: blob:;
+    connect-src 'self' https: wss:;
+    worker-src 'self' blob:;
+    base-uri 'self';
+    form-action 'self';
+  ">
+
+  <!-- NOTE: X-Frame-Options must be set via HTTP header in production -->
+
+  <!-- Prevent MIME type sniffing -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+
+  <!-- Enable XSS filter in older browsers -->
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+
+  <!-- Referrer Policy - Prevent leaking sensitive URLs -->
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Manrope:wght@400;500;700&display=swap"
+    rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background-color: #1C1C1E;
+      overflow-x: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
+</html>
