@@ -1,6 +1,7 @@
 /**
  * Global mock for framer-motion
  * Auto-mocked in all tests via Jest moduleNameMapper
+ * CONSERVATIVE APPROACH: Keep as .js for maximum compatibility
  */
 const React = require('react');
 

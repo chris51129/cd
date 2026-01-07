@@ -5,6 +5,9 @@
 module.exports = {
     // Test environment
     testEnvironment: 'jsdom',
+    preset: 'ts-jest/presets/js-with-ts',
+    moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json'],
+    extensionsToTreatAsEsm: ['.ts', '.tsx'],
 
     // Setup files to run after jest is initialized
     setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
