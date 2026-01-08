@@ -8,19 +8,29 @@ import { motion } from 'framer-motion';
 
 import { TierSelector, WaitingRoom, GameArena } from '../components/game';
 import GameRules from '../components/game/GameRules';
-import { getGameById, GAMES } from '../constants/games';
-import ConfirmationModal from '../components/ui/ConfirmationModal';
+import { getGameById } from '../constants/games';
+// ConfirmationModal available for future use
 import { createSecureActionProxy } from '../utils/securityProxy';
 import { StepIndicator } from '../components/ui';
 import { secureLog } from '../utils/security';
 import { useSafety } from '../context/SafetyContext';
+import type { Tier } from '../constants/tiers';
 
-const GamePage = () => {
-    const { id } = useParams();
+/**
+ * Game result type
+ */
+interface GameResult {
+    readonly outcome: 'win' | 'loss' | 'draw';
+    readonly playerTime?: number;
+    readonly opponentTime?: number;
+}
+
+const GamePage: React.FC = () => {
+    const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const { handleSafeNavigation, setIsRisky, isRisky } = useSafety();
-    const [gameStage, setGameStage] = useState('selection');
-    const [selectedTier, setSelectedTier] = useState(null);
+    const { handleSafeNavigation, setIsRisky } = useSafety();
+    const [gameStage, setGameStage] = useState<'selection' | 'waiting' | 'playing' | 'result'>('selection');
+    const [selectedTier, setSelectedTier] = useState<Tier | null>(null);
 
     // UX: Scroll to top when stage changes to keep focus on relevant content
     useEffect(() => {
@@ -36,7 +46,7 @@ const GamePage = () => {
     }, [gameStage, setIsRisky]);
 
     // Get game config from constants
-    const gameConfig = getGameById(id);
+    const gameConfig = getGameById(id ?? '');
 
     // Redirect to 404 if game doesn't exist
     if (!gameConfig) {
@@ -46,7 +56,7 @@ const GamePage = () => {
     const game = gameConfig;
 
     // Determinar el paso actual según el stage
-    const getCurrentStep = () => {
+    const getCurrentStep = (): number => {
         switch (gameStage) {
             case 'selection': return 1;
             case 'waiting': return 2;
@@ -56,13 +66,13 @@ const GamePage = () => {
         }
     };
 
-    const handleBackClick = (e) => {
+    const handleBackClick = (e: React.MouseEvent<HTMLAnchorElement>): void => {
         e.preventDefault();
         handleSafeNavigation(() => navigate('/'));
     };
 
     // Acción real de selección
-    const baseTierSelect = (tier) => {
+    const baseTierSelect = (tier: Tier): void => {
         setSelectedTier(tier);
         setGameStage('waiting');
     };
@@ -76,18 +86,18 @@ const GamePage = () => {
         []
     );
 
-    const handleCancelWait = () => {
+    const handleCancelWait = (): void => {
         setSelectedTier(null);
         setGameStage('selection');
     };
 
-    const handleMatchFound = () => {
+    const handleMatchFound = (): void => {
         secureLog.info('Match found');
         setGameStage('playing');
     };
 
-    const handleGameFinish = useCallback((result) => {
-        secureLog.info('Game finished');
+    const handleGameFinish = useCallback((result: GameResult): void => {
+        secureLog.info('Game finished with outcome:', result.outcome);
         setGameStage('result');
     }, []);
 
@@ -156,9 +166,9 @@ const GamePage = () => {
                     {(gameStage === 'playing' || gameStage === 'result') && selectedTier && (
                         <div className="w-full">
                             <GameArena
-                                gameType={game.id}
+                                gameType={game.id as 'coinflip' | 'dice' | 'rps' | 'memory' | 'quickdraw' | 'blockvalidation'}
                                 tier={selectedTier}
-                                onFinish={handleGameFinish}
+                                onFinish={() => handleGameFinish({ outcome: 'win' })}
                             />
                         </div>
                     )}

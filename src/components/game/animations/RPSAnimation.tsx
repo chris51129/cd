@@ -5,17 +5,50 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-const RPSAnimation = ({ status, result }) => {
-    const icons = { rock: '✊', paper: '✋', scissors: '✌️' };
-    const [cycle, setCycle] = useState('rock');
+/**
+ * RPS choice type
+ */
+type RPSChoice = 'rock' | 'paper' | 'scissors';
+
+/**
+ * RPS result type
+ */
+interface RPSResult {
+    readonly player?: RPSChoice;
+    readonly opponent?: RPSChoice;
+    readonly outcome?: 'win' | 'loss' | 'draw';
+}
+
+/**
+ * RPS game state type
+ */
+interface RPSGameState {
+    readonly selectionTimeLeft?: number;
+    readonly drawCount?: number;
+    readonly rpsResult?: RPSResult;
+}
+
+/**
+ * Props for RPSAnimation component
+ */
+interface RPSAnimationProps {
+    readonly status: string;
+    readonly result?: RPSResult | null;
+    readonly gameState?: RPSGameState;
+}
+
+const RPSAnimation: React.FC<RPSAnimationProps> = ({ status, result }) => {
+    const icons: Record<RPSChoice, string> = { rock: '✊', paper: '✋', scissors: '✌️' };
+    const [cycle, setCycle] = useState<RPSChoice>('rock');
 
     useEffect(() => {
         if (status === 'spin') {
             const interval = setInterval(() => {
-                setCycle(prev => prev === 'rock' ? 'paper' : prev === 'paper' ? 'scissors' : 'rock');
+                setCycle((prev: RPSChoice) => prev === 'rock' ? 'paper' : prev === 'paper' ? 'scissors' : 'rock');
             }, 100);
             return () => clearInterval(interval);
         }
+        return undefined;
     }, [status]);
 
     return (
@@ -28,7 +61,7 @@ const RPSAnimation = ({ status, result }) => {
                     transition={{ duration: 0.5, repeat: status === 'spin' ? Infinity : 0 }}
                     style={{ fontSize: '5rem' }}
                 >
-                    {status === 'spin' ? icons[cycle] : icons[result?.player]}
+                    {status === 'spin' ? icons[cycle] : icons[result?.player ?? 'rock']}
                 </motion.div>
             </div>
 
@@ -40,7 +73,7 @@ const RPSAnimation = ({ status, result }) => {
                     transition={{ duration: 0.5, repeat: status === 'spin' ? Infinity : 0, delay: 0.1 }}
                     style={{ fontSize: '5rem', transform: 'scaleX(-1)' }}
                 >
-                    {status === 'spin' ? icons[cycle] : icons[result?.opponent]}
+                    {status === 'spin' ? icons[cycle] : icons[result?.opponent ?? 'rock']}
                 </motion.div>
             </div>
         </div>

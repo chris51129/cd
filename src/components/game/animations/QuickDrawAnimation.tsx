@@ -7,7 +7,52 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import CountdownOverlay from '../CountdownOverlay';
 
-const QuickDrawAnimation = ({ status, result, gameState, onAction }) => {
+/**
+ * QuickDraw state type
+ */
+type QuickDrawState = 'countdown' | 'waiting' | 'signal' | 'result';
+
+/**
+ * QuickDraw game state
+ */
+interface QuickDrawGameState {
+    readonly quickDrawState?: QuickDrawState;
+    readonly countdownLeft?: number;
+    readonly hasPenalty?: boolean;
+}
+
+/**
+ * QuickDraw result type
+ */
+interface QuickDrawResult {
+    readonly outcome?: 'win' | 'loss' | 'draw';
+    readonly reactionTime?: number;
+    readonly timeout?: boolean;
+    readonly hasPenalty?: boolean;
+}
+
+/**
+ * Visuals config type
+ */
+interface Visuals {
+    bg: string;
+    text: string;
+    sub: string;
+    scale: number | number[];
+    duration: number;
+}
+
+/**
+ * Props for QuickDrawAnimation component
+ */
+interface QuickDrawAnimationProps {
+    readonly status: string;
+    readonly result?: QuickDrawResult | null;
+    readonly gameState?: QuickDrawGameState | null;
+    readonly onAction?: () => void;
+}
+
+const QuickDrawAnimation: React.FC<QuickDrawAnimationProps> = ({ status, result, gameState, onAction }) => {
     // gameState from hook: { quickDrawState, countdownLeft, hasPenalty }
     const {
         quickDrawState = 'countdown',
@@ -16,7 +61,7 @@ const QuickDrawAnimation = ({ status, result, gameState, onAction }) => {
     } = gameState || {};
 
     // Visual Styles based on state
-    const getVisuals = () => {
+    const getVisuals = (): Visuals => {
         switch (quickDrawState) {
             case 'countdown':
                 return {
@@ -71,6 +116,8 @@ const QuickDrawAnimation = ({ status, result, gameState, onAction }) => {
     const visuals = getVisuals();
     const isClickable = quickDrawState === 'waiting' || quickDrawState === 'signal';
     const showCountdown = quickDrawState === 'countdown';
+    // Verificar que estamos en fase activa de juego usando el status del componente
+    const isGameActive = status === 'spin' || status === 'result';
 
     return (
         <div className="quickdraw-container" style={{
@@ -91,7 +138,7 @@ const QuickDrawAnimation = ({ status, result, gameState, onAction }) => {
             />
 
             {/* ========== GAMEPLAY / RESULT PHASE ========== */}
-            {!showCountdown && (
+            {isGameActive && !showCountdown && (
                 <AnimatePresence mode='wait'>
                     <motion.button
                         key={quickDrawState}
@@ -136,4 +183,5 @@ const QuickDrawAnimation = ({ status, result, gameState, onAction }) => {
         </div>
     );
 };
-export default QuickDrawAnimation;
+
+export default QuickDrawAnimation;

@@ -1,7 +1,6 @@
 /**
  * Home - Landing page for CryptoDuels
  */
-import React from 'react';
 import { Hero, FeatureSection, Leaderboard } from '../components/home';
 import '../styles/components/BackgroundEffects.css';
 

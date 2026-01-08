@@ -27,11 +27,19 @@ const DROPDOWN_GAMES = [
 
 import { useSafety } from '../../context/SafetyContext';
 
-const GameDropdown = ({ isOpen, onClose }) => {
+/**
+ * Props for GameDropdown component
+ */
+interface GameDropdownProps {
+    readonly isOpen: boolean;
+    readonly onClose: () => void;
+}
+
+const GameDropdown: React.FC<GameDropdownProps> = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
     const { handleSafeNavigation } = useSafety();
 
-    const handleGameClick = (gameId) => {
+    const handleGameClick = (gameId: string): void => {
         handleSafeNavigation(() => {
             navigate(`/game/${gameId}`);
             onClose();
@@ -48,14 +56,15 @@ const GameDropdown = ({ isOpen, onClose }) => {
                     transition={{ duration: 0.2, ease: "easeOut" }}
                     className="game-dropdown-root"
                 >
-                    {DROPDOWN_GAMES.map((cat, idx) => (
+                    {DROPDOWN_GAMES.map((cat, _idx) => (
                         <div key={cat.category} className="dropdown-column">
                             <h4 className="dropdown-category-title">
                                 {cat.category}
                             </h4>
                             <div className="dropdown-items">
                                 {cat.items.map((game) => {
-                                    const IconComponent = Icons[game.icon];
+                                    const IconsMap = Icons as Record<string, React.FC<{ size?: number }>>;
+                                    const IconComponent = IconsMap[game.icon];
                                     return (
                                         <motion.div
                                             key={game.id}

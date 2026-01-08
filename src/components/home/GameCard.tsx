@@ -9,8 +9,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 // Mapa de preloaders para animaciones de cada juego
-// Esto permite precargar la animación cuando el usuario hace hover
-const animationPreloaders = {
+const animationPreloaders: Record<string, () => Promise<unknown>> = {
     coinflip: () => import('../game/animations/CoinFlipAnimation'),
     dice: () => import('../game/animations/DiceAnimation'),
     rps: () => import('../game/animations/RPSAnimation'),
@@ -20,23 +19,36 @@ const animationPreloaders = {
 };
 
 // Configuración de badges según tipo
-const BADGE_CONFIG = {
+const BADGE_CONFIG: Record<string, { label: string; className: string; icon: string }> = {
     NEW: { label: 'NUEVO', className: 'badge-new', icon: '✨' },
     HOT: { label: 'HOT', className: 'badge-hot', icon: '🔥' },
 };
 
-const GameCard = ({ title, desc, type, Icon, delay, link, badge }) => {
-    const cardRef = useRef(null);
+/**
+ * Props for GameCard component
+ */
+interface GameCardProps {
+    readonly title: string;
+    readonly desc: string;
+    readonly type: string;
+    readonly Icon?: React.ComponentType<{ size?: number; strokeWidth?: number; animateOnHover?: boolean }>;
+    readonly delay: number;
+    readonly link: string;
+    readonly badge?: 'NEW' | 'HOT' | string;
+}
+
+const GameCard: React.FC<GameCardProps> = ({ title, desc, type, Icon, delay, link, badge }) => {
+    const cardRef = useRef<HTMLDivElement>(null);
 
     // Extraer el tipo de juego del link (ej: /game/coinflip -> coinflip)
-    const getGameTypeFromLink = (linkPath) => {
+    const getGameTypeFromLink = (linkPath: string): string | null => {
         if (!linkPath) return null;
         const match = linkPath.match(/\/game\/(\w+)/);
         return match ? match[1] : null;
     };
 
     // Handler para el efecto de iluminación de cursor
-    const handleMouseMove = useCallback((e) => {
+    const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>): void => {
         if (!cardRef.current) return;
         const rect = cardRef.current.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -46,7 +58,7 @@ const GameCard = ({ title, desc, type, Icon, delay, link, badge }) => {
     }, []);
 
     // OPTIMIZACIÓN: Precargar la animación del juego en hover
-    const handleMouseEnter = useCallback(() => {
+    const handleMouseEnter = useCallback((): void => {
         const gameType = getGameTypeFromLink(link);
         if (gameType && animationPreloaders[gameType]) {
             // Preload en background - no bloqueamos el render
@@ -85,7 +97,7 @@ const GameCard = ({ title, desc, type, Icon, delay, link, badge }) => {
 
                     <div className="game-icon-container">
                         <div className="game-icon">
-                            <Icon />
+                            {Icon && <Icon />}
                         </div>
                     </div>
 

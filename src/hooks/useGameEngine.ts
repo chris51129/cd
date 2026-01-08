@@ -49,6 +49,8 @@ export interface GameState {
     // RPS state
     readonly scores: RPSScores;
     readonly currentRound: number;
+    readonly drawCount?: number;
+    readonly rpsResult?: unknown;
 
     // Selection state
     readonly selectionTimeLeft?: number;

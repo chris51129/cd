@@ -1,7 +1,6 @@
 /**
  * NotFound - 404 Page for invalid routes
  */
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 

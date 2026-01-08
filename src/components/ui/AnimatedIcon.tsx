@@ -1,12 +1,29 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { LucideIcon } from 'lucide-react';
 
+/**
+ * Animation preset types
+ */
+type AnimationPreset = 'flame' | 'pulse' | 'draw' | 'spin' | 'bounce';
+
+/**
+ * Props for AnimatedIcon component
+ */
+interface AnimatedIconProps {
+    readonly icon: LucideIcon;
+    readonly size?: number;
+    readonly color?: string;
+    readonly strokeWidth?: number;
+    readonly preset?: AnimationPreset;
+    readonly className?: string;
+}
 
 /**
  * AnimatedIcon Component
  * A wrapper to animate Lucide icons with Framer Motion presets.
  */
-const AnimatedIcon = ({
+const AnimatedIcon: React.FC<AnimatedIconProps> = ({
     icon: Icon,
     size = 24,
     color = "currentColor",
@@ -83,8 +100,8 @@ const AnimatedIcon = ({
         <motion.div
             className={`animated-icon-wrapper ${className}`}
             style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
-            initial={currentVariant.initial}
-            animate={currentVariant.animate}
+            initial={'initial' in currentVariant ? currentVariant.initial : undefined}
+            animate={currentVariant.animate as { scale?: number[]; opacity?: number[]; rotate?: number[]; filter?: string[] }}
         >
             <Icon
                 size={size}
@@ -94,4 +111,5 @@ const AnimatedIcon = ({
         </motion.div>
     );
 };
-export default AnimatedIcon;
+
+export default AnimatedIcon;

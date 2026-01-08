@@ -8,21 +8,35 @@
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 
+/**
+ * Card state type
+ */
+type CardState = 'hidden' | 'flipped' | 'matched';
 
-const MemoryCard = ({ icon, state, onClick, index }) => {
+/**
+ * Props for MemoryCard component
+ */
+interface MemoryCardProps {
+    readonly icon: React.ComponentType<{ size?: number; animateOnHover?: boolean; color?: string }> | string;
+    readonly state: CardState;
+    readonly onClick: (index: number) => void;
+    readonly index: number;
+}
+
+const MemoryCard: React.FC<MemoryCardProps> = ({ icon, state, onClick, index }) => {
     // Estados: 'hidden', 'flipped', 'matched'
     const isFlipped = state === 'flipped' || state === 'matched';
     const isMatched = state === 'matched';
 
     // Clases CSS según el estado para permitir overrides de light mode
-    const getStateClass = () => {
+    const getStateClass = (): string => {
         if (isMatched) return 'matched';
         if (isFlipped) return 'flipped';
         return 'hidden';
     };
 
     // Colores según el estado - usando var() para soporte de temas
-    const getCardStyle = () => {
+    const getCardStyle = (): React.CSSProperties => {
         if (isMatched) {
             return {
                 background: 'var(--memory-card-matched-bg, linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(34, 197, 94, 0.1)))',
@@ -44,7 +58,7 @@ const MemoryCard = ({ icon, state, onClick, index }) => {
 
     return (
         <motion.div
-            className="memory-card"
+            className={`memory-card ${getStateClass()}`}
             onClick={() => !isMatched && onClick(index)}
             style={{
                 position: 'relative',
@@ -148,7 +162,7 @@ const MemoryCard = ({ icon, state, onClick, index }) => {
 };
 
 // Comparador personalizado: solo re-renderizar si cambia el state o icon
-const areEqual = (prevProps, nextProps) => {
+const areEqual = (prevProps: MemoryCardProps, nextProps: MemoryCardProps): boolean => {
     return (
         prevProps.state === nextProps.state &&
         prevProps.icon === nextProps.icon &&
@@ -158,4 +172,5 @@ const areEqual = (prevProps, nextProps) => {
 
 const MemoizedMemoryCard = memo(MemoryCard, areEqual);
 MemoizedMemoryCard.displayName = 'MemoryCard';
-export default MemoizedMemoryCard;
+
+export default MemoizedMemoryCard;

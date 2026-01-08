@@ -4,10 +4,21 @@ import { motion } from 'framer-motion';
 import './CyberCheckbox.css';
 
 /**
+ * Props for CyberCheckbox component
+ */
+interface CyberCheckboxProps {
+    readonly checked: boolean;
+    readonly onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    readonly label?: string;
+    readonly id: string;
+    readonly disabled?: boolean;
+}
+
+/**
  * CyberCheckbox - A high-tech alternative to standard checkboxes.
  * Inspired by security-themed components on Uiverse.io.
  */
-const CyberCheckbox = ({
+const CyberCheckbox: React.FC<CyberCheckboxProps> = ({
     checked,
     onChange,
     label,
@@ -41,4 +52,5 @@ const CyberCheckbox = ({
         </label>
     );
 };
-export default CyberCheckbox;
+
+export default CyberCheckbox;

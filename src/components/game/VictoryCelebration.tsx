@@ -13,8 +13,33 @@ import { motion, AnimatePresence } from 'framer-motion';
 const CONFETTI_COLORS = ['#FFD700', '#4ADE80', '#60A5FA', '#F472B6', '#A78BFA', '#FBBF24'];
 const CONFETTI_COUNT = 50;
 
+/**
+ * Confetti particle type
+ */
+interface ConfettiParticle {
+    readonly id: number;
+    readonly x: number;
+    readonly color: string;
+    readonly size: number;
+    readonly delay: number;
+    readonly duration: number;
+    readonly rotation: number;
+    readonly shape: 'circle' | 'square';
+}
+
+/**
+ * Sparkle type
+ */
+interface SparkleData {
+    readonly id: number;
+    readonly x: number;
+    readonly y: number;
+    readonly delay: number;
+    readonly size: number;
+}
+
 // Genera una partícula de confeti aleatoria
-const generateConfetti = (index) => ({
+const generateConfetti = (index: number): ConfettiParticle => ({
     id: index,
     x: Math.random() * 100, // Posición X inicial (%)
     color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
@@ -26,7 +51,11 @@ const generateConfetti = (index) => ({
 });
 
 // Componente de partícula individual
-const ConfettiParticle = ({ particle }) => (
+interface ConfettiParticleProps {
+    readonly particle: ConfettiParticle;
+}
+
+const ConfettiParticleComponent: React.FC<ConfettiParticleProps> = ({ particle }) => (
     <motion.div
         key={particle.id}
         initial={{
@@ -82,7 +111,12 @@ const LightRays = () => (
 );
 
 // Componente de anillo expansivo
-const ExplosionRing = ({ delay = 0, color = 'rgba(74, 222, 128, 0.5)' }) => (
+interface ExplosionRingProps {
+    readonly delay?: number;
+    readonly color?: string;
+}
+
+const ExplosionRing: React.FC<ExplosionRingProps> = ({ delay = 0, color = 'rgba(74, 222, 128, 0.5)' }) => (
     <motion.div
         initial={{ scale: 0, opacity: 1 }}
         animate={{ scale: 3, opacity: 0 }}
@@ -103,7 +137,14 @@ const ExplosionRing = ({ delay = 0, color = 'rgba(74, 222, 128, 0.5)' }) => (
 );
 
 // Componente de estrella brillante
-const Sparkle = ({ x, y, delay, size = 20 }) => (
+interface SparkleProps {
+    readonly x: number;
+    readonly y: number;
+    readonly delay: number;
+    readonly size?: number;
+}
+
+const Sparkle: React.FC<SparkleProps> = ({ x, y, delay, size = 20 }) => (
     <motion.div
         initial={{ scale: 0, opacity: 0, rotate: 0 }}
         animate={{
@@ -131,7 +172,11 @@ const Sparkle = ({ x, y, delay, size = 20 }) => (
 /**
  * SuccessTrophy - Componente animado de hito/reconocimiento
  */
-export const SuccessTrophy = ({ size = '4rem' }) => (
+interface SuccessTrophyProps {
+    readonly size?: string;
+}
+
+export const SuccessTrophy: React.FC<SuccessTrophyProps> = ({ size = '4rem' }) => (
     <motion.div
         animate={{
             y: [0, -10, 0],
@@ -147,22 +192,28 @@ export const SuccessTrophy = ({ size = '4rem' }) => (
 /**
  * SuccessCelebration - Componente principal de celebración
  */
-const SuccessCelebration = ({
+interface SuccessCelebrationProps {
+    readonly isActive?: boolean;
+    readonly amount?: string;
+    readonly onComplete?: () => void;
+}
+
+const SuccessCelebration: React.FC<SuccessCelebrationProps> = ({
     isActive = false,
     amount = '0.00',
     onComplete
 }) => {
-    const [confetti, setConfetti] = useState([]);
-    const [sparkles, setSparkles] = useState([]);
+    const [confetti, setConfetti] = useState<ConfettiParticle[]>([]);
+    const [sparkles, setSparkles] = useState<SparkleData[]>([]);
 
     // Generar confeti cuando se activa
     useEffect(() => {
         if (isActive) {
-            const newConfetti = Array.from({ length: CONFETTI_COUNT }, (_, i) => generateConfetti(i));
+            const newConfetti = Array.from({ length: CONFETTI_COUNT }, (_, i: number) => generateConfetti(i));
             setConfetti(newConfetti);
 
             // Generar sparkles aleatorios
-            const newSparkles = Array.from({ length: 8 }, (_, i) => ({
+            const newSparkles: SparkleData[] = Array.from({ length: 8 }, (_, i: number) => ({
                 id: i,
                 x: 20 + Math.random() * 60,
                 y: 20 + Math.random() * 60,
@@ -180,6 +231,7 @@ const SuccessCelebration = ({
 
             return () => clearTimeout(timer);
         }
+        return undefined;
     }, [isActive, onComplete]);
 
     if (!isActive) return null;
@@ -197,6 +249,8 @@ const SuccessCelebration = ({
                     zIndex: 999,
                     overflow: 'hidden'
                 }}
+                role="alert"
+                aria-label={`Celebración de victoria - Ganaste ${amount}`}
             >
                 {/* Rayos de luz de fondo */}
                 <LightRays />
@@ -212,8 +266,8 @@ const SuccessCelebration = ({
                 ))}
 
                 {/* Confeti */}
-                {confetti.map(particle => (
-                    <ConfettiParticle key={particle.id} particle={particle} />
+                {confetti.map((particle: ConfettiParticle) => (
+                    <ConfettiParticleComponent key={particle.id} particle={particle} />
                 ))}
             </div>
         </AnimatePresence>

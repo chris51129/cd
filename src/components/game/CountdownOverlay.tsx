@@ -9,12 +9,29 @@
  * - Block Validation (5s antes de empezar)
  * - Memory (5s de memorización)
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import './CountdownOverlay.css';
 
-const CountdownOverlay = ({
+/**
+ * Variant type
+ */
+type CountdownVariant = 'default' | 'memorize' | 'danger';
+
+/**
+ * Props for CountdownOverlay component
+ */
+interface CountdownOverlayProps {
+    readonly isActive: boolean;
+    readonly countdownValue: number;
+    readonly title?: string;
+    readonly subtitle?: string;
+    readonly variant?: CountdownVariant;
+    readonly onComplete?: () => void;
+}
+
+const CountdownOverlay: React.FC<CountdownOverlayProps> = ({
     isActive,
     countdownValue,
     title = 'PREPARADO',
@@ -42,6 +59,18 @@ const CountdownOverlay = ({
     };
 
     const style = variants[variant] || variants.default;
+
+    // Invoke onComplete callback when countdown reaches 0
+    useEffect(() => {
+        if (countdownValue <= 0 && onComplete) {
+            // Small delay to show "¡GO!" before completing
+            const timer = setTimeout(() => {
+                onComplete();
+            }, 500);
+            return () => clearTimeout(timer);
+        }
+        return undefined;
+    }, [countdownValue, onComplete]);
 
     // Animaciones para el número
     const numberVariants = {
@@ -170,4 +199,5 @@ const CountdownOverlay = ({
         </AnimatePresence>
     );
 };
-export default CountdownOverlay;
+
+export default CountdownOverlay;

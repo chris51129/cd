@@ -4,10 +4,30 @@ import { motion } from 'framer-motion';
 import './CyberButton.css';
 
 /**
+ * CyberButton types
+ */
+type CyberButtonVariant = 'primary' | 'secondary' | 'danger';
+type CyberButtonSize = 'sm' | 'md' | 'lg';
+type CyberButtonType = 'button' | 'submit' | 'reset';
+
+/**
+ * Props for CyberButton component
+ */
+interface CyberButtonProps {
+    readonly children: React.ReactNode;
+    readonly onClick?: () => void;
+    readonly type?: CyberButtonType;
+    readonly variant?: CyberButtonVariant;
+    readonly className?: string;
+    readonly disabled?: boolean;
+    readonly size?: CyberButtonSize;
+}
+
+/**
  * CyberButton - A high-fidelity, terminal-style button inspired by Uiverse.io
  * Features: Beveled corners (clip-path), neon glow, and haptic feedback.
  */
-const CyberButton = ({
+const CyberButton: React.FC<CyberButtonProps> = ({
     children,
     onClick,
     type = 'button',
@@ -33,4 +53,5 @@ const CyberButton = ({
         </motion.button>
     );
 };
-export default CyberButton;
+
+export default CyberButton;

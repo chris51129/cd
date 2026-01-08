@@ -5,32 +5,49 @@
 import React from 'react';
 import { reloadPage, navigateTo } from '../../utils/navigation';
 
-class ErrorBoundary extends React.Component {
-    constructor(props) {
+/**
+ * Props for ErrorBoundary component
+ */
+interface ErrorBoundaryProps {
+    readonly children: React.ReactNode;
+}
+
+/**
+ * State for ErrorBoundary component
+ */
+interface ErrorBoundaryState {
+    hasError: boolean;
+    error: Error | null;
+    errorInfo: React.ErrorInfo | null;
+}
+
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+    constructor(props: ErrorBoundaryProps) {
         super(props);
         this.state = { hasError: false, error: null, errorInfo: null };
     }
 
-    static getDerivedStateFromError(error) {
+    static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
         // Update state so the next render shows the fallback UI
-        return { hasError: true };
+        // Store error for potential logging/display
+        return { hasError: true, error };
     }
 
-    componentDidCatch(error, errorInfo) {
+    componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
         // Log the error to console (could send to monitoring service)
         console.error('ErrorBoundary caught an error:', error, errorInfo);
         this.setState({ error, errorInfo });
     }
 
-    handleReload = () => {
+    handleReload = (): void => {
         reloadPage();
     };
 
-    handleGoHome = () => {
+    handleGoHome = (): void => {
         navigateTo('/');
     };
 
-    render() {
+    render(): React.ReactNode {
         if (this.state.hasError) {
             return (
                 <div className="error-boundary-container" style={{

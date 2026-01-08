@@ -9,7 +9,6 @@
  * - Selección con clic (no automática)
  */
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { TIERS } from '../../constants/tiers';
@@ -17,15 +16,27 @@ import { Card } from '../ui';
 import { secureLog } from '../../utils/security';
 import * as Icons from '../ui/AnimatedLucideIcons';
 import './TierSelector.css';
+import type { Tier } from '../../constants/tiers';
 
-const TierIcon = ({ iconName, color, size = 44 }) => {
-    const IconComponent = Icons[iconName];
+/**
+ * Props for TierIcon component
+ */
+interface TierIconProps {
+    readonly iconName: string;
+    readonly color: string;
+    readonly size?: number;
+}
+
+const TierIcon: React.FC<TierIconProps> = ({ iconName, color, size = 44 }) => {
+    // Type assertion segura para indexar el módulo Icons
+    const IconsMap = Icons as Record<string, React.FC<{ size?: number; color?: string }>>;
+    const IconComponent = IconsMap[iconName];
     if (!IconComponent) return null;
     return <IconComponent size={size} color={color} />;
 };
 
 // Helper to convert hex to rgb for dynamic styles
-const hexToRgb = (hex) => {
+const hexToRgb = (hex: string): { r: number; g: number; b: number } => {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
         r: parseInt(result[1], 16),
@@ -34,7 +45,17 @@ const hexToRgb = (hex) => {
     } : { r: 0, g: 0, b: 0 };
 };
 
-const TierCard = ({ tier, isSelected, isCentered, onClick }) => {
+/**
+ * Props for TierCard component
+ */
+interface TierCardProps {
+    readonly tier: Tier;
+    readonly isSelected: boolean;
+    readonly isCentered: boolean;
+    readonly onClick: (tier: Tier) => void;
+}
+
+const TierCard: React.FC<TierCardProps> = ({ tier, isSelected, isCentered, onClick }) => {
     const rgb = hexToRgb(tier.color || '#2E5CFF');
     const isPopular = tier.popular === true;
     const isPremium = tier.premium === true;
@@ -75,7 +96,7 @@ const TierCard = ({ tier, isSelected, isCentered, onClick }) => {
             tabIndex={0}
             aria-label={`Seleccionar tier ${tier.label} de $${tier.amount} USDT`}
             aria-pressed={isSelected}
-            onKeyDown={(e) => {
+            onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     onClick(tier);
@@ -124,14 +145,21 @@ const TierCard = ({ tier, isSelected, isCentered, onClick }) => {
     );
 };
 
-const TierSelector = ({ onSelect }) => {
-    const [selectedTier, setSelectedTier] = useState(null);
+/**
+ * Props for TierSelector component
+ */
+interface TierSelectorProps {
+    readonly onSelect?: (tier: Tier) => void;
+}
+
+const TierSelector: React.FC<TierSelectorProps> = ({ onSelect }) => {
+    const [selectedTier, setSelectedTier] = useState<Tier | null>(null);
     // Empezar en el tier Gold (index 2) si existe, sino en 0
     const popularIndex = TIERS.findIndex(t => t.popular);
     const [currentIndex, setCurrentIndex] = useState(popularIndex >= 0 ? popularIndex : 0);
 
-    const containerRef = useRef(null);
-    const trackRef = useRef(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const trackRef = useRef<HTMLDivElement | null>(null);
     const isDragging = useRef(false);
     const startX = useRef(0);
     const scrollLeft = useRef(0);
@@ -147,11 +175,11 @@ const TierSelector = ({ onSelect }) => {
         const targetY = 0;
         const distance = targetY - startY;
         const duration = 800; // Ligeramente más rápido que navbar (800ms vs 1000ms)
-        let start = null;
+        let start: number | null = null;
 
-        const easeInOutCubic = (t) => t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+        const easeInOutCubic = (t: number): number => t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
 
-        const step = (timestamp) => {
+        const step = (timestamp: number): void => {
             if (!start) start = timestamp;
             const progress = timestamp - start;
             const percentage = Math.min(progress / duration, 1);
@@ -167,14 +195,14 @@ const TierSelector = ({ onSelect }) => {
         window.requestAnimationFrame(step);
     };
 
-    const handleSelect = (tier) => {
+    const handleSelect = (tier: Tier): void => {
         setSelectedTier(tier);
         // Scroll automático a la zona de juego
         smoothScrollToTop();
         if (onSelect) onSelect(tier);
     };
 
-    const goToIndex = useCallback((index) => {
+    const goToIndex = useCallback((index: number): void => {
         const newIndex = Math.max(0, Math.min(TIERS.length - 1, index));
         // Save scroll position before state change
         const scrollY = window.scrollY;
@@ -185,29 +213,29 @@ const TierSelector = ({ onSelect }) => {
         });
     }, []);
 
-    const handlePrev = useCallback((e) => {
+    const handlePrev = useCallback((e?: React.MouseEvent | KeyboardEvent): void => {
         e?.preventDefault();
         goToIndex(currentIndex - 1);
     }, [currentIndex, goToIndex]);
 
-    const handleNext = useCallback((e) => {
+    const handleNext = useCallback((e?: React.MouseEvent | KeyboardEvent): void => {
         e?.preventDefault();
         goToIndex(currentIndex + 1);
     }, [currentIndex, goToIndex]);
 
     // Mouse drag handlers
-    const handleMouseDown = (e) => {
+    const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>): void => {
         isDragging.current = true;
         startX.current = e.pageX - (trackRef.current?.offsetLeft || 0);
         scrollLeft.current = currentIndex;
     };
 
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>): void => {
         if (!isDragging.current) return;
         e.preventDefault();
     };
 
-    const handleMouseUp = (e) => {
+    const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>): void => {
         if (!isDragging.current) return;
         isDragging.current = false;
 
@@ -224,11 +252,11 @@ const TierSelector = ({ onSelect }) => {
     };
 
     // Touch handlers
-    const handleTouchStart = (e) => {
+    const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>): void => {
         startX.current = e.touches[0].clientX;
     };
 
-    const handleTouchEnd = (e) => {
+    const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>): void => {
         const endX = e.changedTouches[0].clientX;
         const diff = startX.current - endX;
 
@@ -243,7 +271,7 @@ const TierSelector = ({ onSelect }) => {
 
     // Keyboard navigation
     useEffect(() => {
-        const handleKeyDown = (e) => {
+        const handleKeyDown = (e: KeyboardEvent): void => {
             if (e.key === 'ArrowLeft') handlePrev();
             if (e.key === 'ArrowRight') handleNext();
         };
@@ -301,7 +329,7 @@ const TierSelector = ({ onSelect }) => {
                                     tier={tier}
                                     isSelected={selectedTier?.id === tier.id}
                                     isCentered={index === currentIndex}
-                                    onClick={(t) => {
+                                    onClick={(t: Tier) => {
                                         handleSelect(t);
                                         goToIndex(index);
                                     }}
@@ -373,4 +401,5 @@ const TierSelector = ({ onSelect }) => {
         </div>
     );
 };
-export default TierSelector;
+
+export default TierSelector;

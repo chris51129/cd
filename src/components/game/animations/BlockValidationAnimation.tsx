@@ -4,12 +4,46 @@
  * El jugador debe hacer clic en números del 1 al 25 en orden secuencial.
  */
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 import CountdownOverlay from '../CountdownOverlay';
 import './BlockValidation.css';
 
-const BlockValidationAnimation = ({ status, result, gameState, onCellClick }) => {
+/**
+ * BlockValidation game state
+ */
+interface BlockValidationGameState {
+    readonly blockGrid?: readonly number[];
+    readonly blockNextTarget?: number;
+    readonly blockErrors?: number;
+    readonly blockState?: 'countdown' | 'playing' | 'result';
+    readonly blockStartTime?: number;
+    readonly blockTimeLeft?: number;
+    readonly countdownLeft?: number;
+}
+
+/**
+ * BlockValidation result
+ */
+interface BlockValidationResult {
+    readonly outcome: 'win' | 'loss' | 'draw';
+    readonly playerTime?: number;
+    readonly opponentTime?: number;
+    readonly errors?: number;
+    readonly timeout?: boolean;
+}
+
+/**
+ * Props for BlockValidationAnimation component
+ */
+interface BlockValidationAnimationProps {
+    readonly status: string;
+    readonly result?: BlockValidationResult | null;
+    readonly gameState?: BlockValidationGameState | null;
+    readonly onCellClick?: (number: number) => void;
+}
+
+const BlockValidationAnimation: React.FC<BlockValidationAnimationProps> = ({ status, result, gameState, onCellClick }) => {
     const {
         blockGrid = [],
         blockNextTarget = 1,
@@ -30,16 +64,17 @@ const BlockValidationAnimation = ({ status, result, gameState, onCellClick }) =>
             }, 50); // Actualizar cada 50ms para fluidez
             return () => clearInterval(interval);
         }
+        return undefined;
     }, [blockState, blockStartTime]);
 
     // Formatear tiempo (segundos)
-    const formatSeconds = (s) => `${s}s`;
+    const formatSeconds = (s: number): string => `${s}s`;
 
     // Estado visual de cada celda
-    const [clickedCells, setClickedCells] = useState({});
-    const [errorCell, setErrorCell] = useState(null);
+    const [clickedCells, setClickedCells] = useState<Record<number, string>>({});
+    const [errorCell, setErrorCell] = useState<number | null>(null);
 
-    const handleClick = (number, index) => {
+    const handleClick = (number: number, index: number): void => {
         if (blockState !== 'playing') return;
 
         if (number === blockNextTarget) {
@@ -64,7 +99,7 @@ const BlockValidationAnimation = ({ status, result, gameState, onCellClick }) =>
                 width: '100%',
                 maxWidth: '400px',
                 margin: '1.5rem auto 0',
-                minedHeight: '400px',
+                minHeight: '400px',
                 position: 'relative'
             }}>
                 <CountdownOverlay
@@ -84,7 +119,7 @@ const BlockValidationAnimation = ({ status, result, gameState, onCellClick }) =>
 
         return (
             <div className="block-validation-container">
-                {/* Header: Timer + Errores */}
+                {/* Header: Timer + Tiempo Transcurrido + Errores */}
                 <div className="block-validation-header">
                     {/* Timer (Countdown) */}
                     <div style={{ textAlign: 'center' }}>
@@ -100,6 +135,16 @@ const BlockValidationAnimation = ({ status, result, gameState, onCellClick }) =>
                         </motion.div>
                     </div >
 
+                    {/* Tiempo Transcurrido (elapsedTime en ms) */}
+                    <div style={{ textAlign: 'center' }}>
+                        <div className="block-stat-label">
+                            Transcurrido
+                        </div>
+                        <div className="block-stat-value neutral" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                            {(elapsedTime / 1000).toFixed(2)}s
+                        </div>
+                    </div>
+
                     {/* Errores */}
                     < div style={{ textAlign: 'center' }}>
                         <div className="block-stat-label">
@@ -113,7 +158,7 @@ const BlockValidationAnimation = ({ status, result, gameState, onCellClick }) =>
 
                 {/* Grid 5x5 */}
                 <div className="block-grid">
-                    {blockGrid.map((number, index) => {
+                    {blockGrid.map((number: number, index: number) => {
                         const isValidated = clickedCells[index] === 'valid';
                         const isError = errorCell === index;
 
@@ -141,7 +186,7 @@ const BlockValidationAnimation = ({ status, result, gameState, onCellClick }) =>
         const totalTime = (result.playerTime || 0) + penalty;
 
         // Formateador de precisión para el resultado final
-        const formatResultTime = (ms) => {
+        const formatResultTime = (ms: number): string => {
             const seconds = Math.floor(ms / 1000);
             const millis = Math.floor((ms % 1000) / 10);
             return `${seconds}.${millis.toString().padStart(2, '0')}s`;
@@ -178,7 +223,7 @@ const BlockValidationAnimation = ({ status, result, gameState, onCellClick }) =>
                         fontFamily: 'monospace',
                     }}>
                         <div className="result-label">
-                            Tu tiempo: <span className="result-value">{formatResultTime(result.playerTime)}</span>
+                            Tu tiempo: <span className="result-value">{formatResultTime(result.playerTime ?? 0)}</span>
                         </div>
                         {penalty > 0 && (
                             <div className="result-penalty">
@@ -189,7 +234,7 @@ const BlockValidationAnimation = ({ status, result, gameState, onCellClick }) =>
                             Total: {formatResultTime(totalTime)}
                         </div>
                         <div className="result-opponent">
-                            Oponente: {formatResultTime(result.opponentTime)}
+                            Oponente: {formatResultTime(result.opponentTime ?? 0)}
                         </div>
                     </div>
                 </motion.div>
@@ -215,4 +260,5 @@ const BlockValidationAnimation = ({ status, result, gameState, onCellClick }) =>
         </div>
     );
 };
-export default BlockValidationAnimation;
+
+export default BlockValidationAnimation;

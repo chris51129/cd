@@ -22,6 +22,6 @@ import { secureRandomInt } from './security';
  * @returns {number} Secure random integer
  * @deprecated Use secureRandomInt directly from security.js
  */
-export const getRandomInt = (min, max) => {
+export const getRandomInt = (min: number, max: number): number => {
     return secureRandomInt(min, max);
 };

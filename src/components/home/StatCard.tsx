@@ -7,7 +7,20 @@ import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { useCountUp } from '../../hooks/useCountUp';
 
-const StatCard = memo(({ label, value, suffix = "", delay, Icon }) => {
+/**
+ * Props for StatCard component
+ * Icon accepts any component that can take size/strokeWidth, including FC<IconProps>
+ */
+interface StatCardProps {
+    readonly label: string;
+    readonly value: string;
+    readonly suffix?: string;
+    readonly delay: number;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    readonly Icon?: React.ComponentType<any>;
+}
+
+const StatCard = memo<StatCardProps>(({ label, value, suffix = "", delay, Icon }) => {
     const numValue = parseInt(value.replace(/[^0-9]/g, ''));
     const isNumber = !isNaN(numValue);
     const count = useCountUp(isNumber ? numValue : 0);

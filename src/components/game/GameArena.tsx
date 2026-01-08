@@ -1,6 +1,6 @@
 /**
  * GameArena - Componente principal de la arena de juego
- * Implementa el patró³n Compound Components para una arquitectura senior y desacoplada.
+ * Implementa el patrón Compound Components para una arquitectura senior y desacoplada.
  */
 import React from 'react';
 
@@ -9,9 +9,29 @@ import ArenaHeader from './ArenaHeader';
 import ArenaBoard from './ArenaBoard';
 import ArenaResults from './ArenaResults';
 import ArenaStatus from './ArenaStatus';
-import { useGameEngine } from '../../hooks/useGameEngine';
+import { useGameEngine, type GameType } from '../../hooks/useGameEngine';
+import type { Tier } from '../../constants/tiers';
 
-const GameArena = ({ gameType, tier, onFinish }) => {
+/**
+ * Props for GameArena component
+ */
+interface GameArenaProps {
+    readonly gameType: GameType;
+    readonly tier: Tier;
+    readonly onFinish: () => void;
+}
+
+/**
+ * GameArena compound component type
+ */
+interface GameArenaComponent extends React.FC<GameArenaProps> {
+    Header: typeof ArenaHeader;
+    Board: typeof ArenaBoard;
+    Results: typeof ArenaResults;
+    Status: typeof ArenaStatus;
+}
+
+const GameArena: GameArenaComponent = ({ gameType, tier, onFinish }) => {
     // Orquestador del motor de juego
     const { gameState, actions } = useGameEngine({ gameType, onFinish });
 

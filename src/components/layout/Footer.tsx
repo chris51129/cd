@@ -4,8 +4,7 @@
  * Ley de Jakob: Usar patrones familiares que los usuarios ya conocen.
  * Incluye: Logo, enlaces legales, redes sociales, contratos verificados.
  */
-import React from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSafety } from '../../context/SafetyContext';
 
 // Iconos de redes sociales (inline SVG para evitar dependencias)
@@ -39,14 +38,14 @@ const Footer = () => {
     const location = useLocation();
 
     // BULLETPROOF: Programmatic smooth scroll logic (matching Navbar/Hero)
-    const easeInOutCubic = (t) => t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+    const easeInOutCubic = (t: number): number => t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
 
-    const performSmoothScroll = (targetY, duration = 1000) => {
+    const performSmoothScroll = (targetY: number, duration: number = 1000): void => {
         const startY = window.scrollY;
         const distance = targetY - startY;
-        let start = null;
+        let start: number | null = null;
 
-        const step = (timestamp) => {
+        const step = (timestamp: number): void => {
             if (!start) start = timestamp;
             const progress = timestamp - start;
             const percentage = Math.min(progress / duration, 1);
@@ -83,7 +82,7 @@ const Footer = () => {
         }
     };
 
-    const goLink = (url) => {
+    const goLink = (url: string): void => {
         if (url === '/') {
             handleSafeNavigation(goHomeTop);
             return;

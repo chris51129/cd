@@ -5,7 +5,28 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const CoinFlipAnimation = ({ status, result }) => (
+/**
+ * Result type for CoinFlip
+ */
+type CoinFlipResult = 'heads' | 'tails' | null;
+
+/**
+ * Game state type
+ */
+interface CoinFlipGameState {
+    readonly selectionTimeLeft?: number;
+}
+
+/**
+ * Props for CoinFlipAnimation component
+ */
+interface CoinFlipAnimationProps {
+    readonly status: string;
+    readonly result?: CoinFlipResult;
+    readonly gameState?: CoinFlipGameState;
+}
+
+const CoinFlipAnimation: React.FC<CoinFlipAnimationProps> = ({ status, result }) => (
     <div className="flex-center w-full h-full">
         <AnimatePresence mode='wait'>
             {status === 'spin' && (

@@ -11,6 +11,7 @@
 
   <!-- OWASP A05:2021 - Security Misconfiguration Prevention -->
   <!-- Content Security Policy - Prevents XSS and data injection attacks -->
+  <!-- NOTE: In production, replace 'unsafe-inline' with nonces via server headers -->
   <!-- NOTE: frame-ancestors must be set via HTTP header in production (Nginx/Cloudflare) -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
@@ -20,8 +21,10 @@
     img-src 'self' data: blob:;
     connect-src 'self' https: wss:;
     worker-src 'self' blob:;
-    base-uri 'self';
+    object-src 'none';
+    base-uri 'none';
     form-action 'self';
+    require-trusted-types-for 'script';
   ">
 
   <!-- NOTE: X-Frame-Options must be set via HTTP header in production -->

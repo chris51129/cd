@@ -10,11 +10,19 @@ import { GAME_CONFIG } from '../../constants/config';
 jest.mock('framer-motion', () => ({
     motion: {
         div: ({ children, ...props }) => <div {...props}>{children}</div>,
+        span: ({ children, ...props }) => <span {...props}>{children}</span>,
     },
 }));
 
+// Mock AnimatedLucideIcons (used by TierIcon)
+jest.mock('../ui/AnimatedLucideIcons', () => ({
+    AnimatedTrophy: () => <span data-testid="trophy-icon">Trophy</span>,
+    AnimatedCoin: () => <span data-testid="coin-icon">Coin</span>,
+}));
+
 describe('WaitingRoom Component', () => {
-    const mockTier = { id: 1, amount: 10, icon: '🥇', label: 'Gold' };
+    // Mock tier matching canonical Tier type from constants/tiers.ts
+    const mockTier = { id: 1, amount: 10, icon: 'AnimatedTrophy', label: 'Gold', color: '#FFD700' };
 
     beforeEach(() => {
         jest.useFakeTimers();
@@ -56,7 +64,7 @@ describe('WaitingRoom Component', () => {
 
     test('handles missing onMatchFound gracefully', () => {
         // Validation propType warning might fire, but logic should hold
-        render(<WaitingRoom tier={mockTier} onCancel={jest.fn()} />); // No onMatchFound
+        render(<WaitingRoom tier={mockTier} onCancel={jest.fn()} />);
 
         act(() => {
             jest.advanceTimersByTime(GAME_CONFIG.MATCHMAKING_MAX_MS);

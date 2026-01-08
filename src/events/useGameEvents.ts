@@ -16,18 +16,28 @@
  * });
  */
 import { useEffect, useCallback, useRef } from 'react';
-import { gameEvents } from './gameEvents';
+import { gameEvents, GameEventData, EventCallback, UnsubscribeFn } from './gameEvents';
+
+/**
+ * Options for useGameEvents hook
+ */
+interface UseGameEventsOptions {
+    readonly once?: boolean;
+}
 
 /**
  * Hook para suscribirse a eventos del juego
- * @param {string|string[]} events - Evento(s) a escuchar
- * @param {Function} callback - Handler del evento
- * @param {Object} options - Opciones adicionales
- * @param {boolean} options.once - Si solo debe ejecutarse una vez
+ * @param events - Evento(s) a escuchar
+ * @param callback - Handler del evento
+ * @param options - Opciones adicionales
  */
-export const useGameEvents = (events, callback, options = {}) => {
+export const useGameEvents = (
+    events: string | readonly string[],
+    callback: EventCallback,
+    options: UseGameEventsOptions = {}
+): void => {
     const { once = false } = options;
-    const callbackRef = useRef(callback);
+    const callbackRef = useRef<EventCallback>(callback);
 
     // Mantener referencia actualizada del callback
     useEffect(() => {
@@ -36,13 +46,13 @@ export const useGameEvents = (events, callback, options = {}) => {
 
     useEffect(() => {
         const eventList = Array.isArray(events) ? events : [events];
-        const unsubscribes = [];
+        const unsubscribes: UnsubscribeFn[] = [];
 
-        const handler = (data) => {
+        const handler: EventCallback = (data: GameEventData) => {
             callbackRef.current(data);
         };
 
-        eventList.forEach(event => {
+        eventList.forEach((event: string) => {
             if (once) {
                 gameEvents.once(event, handler);
             } else {
@@ -53,17 +63,17 @@ export const useGameEvents = (events, callback, options = {}) => {
 
         // Cleanup al desmontar
         return () => {
-            unsubscribes.forEach(unsub => unsub());
+            unsubscribes.forEach((unsub: UnsubscribeFn) => unsub());
         };
     }, [events, once]);
 };
 
 /**
  * Hook para emitir eventos del juego
- * @returns {Function} Función emit memoizada
+ * @returns Función emit memoizada
  */
-export const useEmitGameEvent = () => {
-    return useCallback((event, data) => {
+export const useEmitGameEvent = (): ((event: string, data?: Record<string, unknown>) => void) => {
+    return useCallback((event: string, data?: Record<string, unknown>): void => {
         gameEvents.emit(event, data);
     }, []);
 };

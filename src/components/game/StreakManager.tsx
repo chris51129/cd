@@ -6,7 +6,7 @@
  * 
  * Implementado con el Patrón Observer para total desacoplamiento.
  */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameEvents, GAME_EVENTS } from '../../events';
 import { AnimatedFlame } from '../ui/Icons';
@@ -19,7 +19,7 @@ const StreakManager = () => {
         return saved ? parseInt(saved, 10) : 0;
     });
     const [showUpdate, setShowUpdate] = useState(false);
-    const [lastOutcome, setLastOutcome] = useState(null);
+    const [lastOutcome, setLastOutcome] = useState<'win' | 'loss' | null>(null);
 
     // Guardar racha en localStorage cada vez que cambie
     useEffect(() => {

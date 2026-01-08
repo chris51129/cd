@@ -12,15 +12,24 @@ import { generateGameHash, generateServerSeed } from '../../utils/fairness';
 import { Icons, Tooltip } from '../ui';
 import { secureLog } from '../../utils/security';
 
+/**
+ * Props for FairnessCard component
+ */
+interface FairnessCardProps {
+    readonly seed: string;
+    readonly hash: string;
+    readonly isWin: boolean;
+}
+
 // Sub-componente para la Tarjeta de Transparencia
-const FairnessCard = ({ seed, hash, isWin }) => {
-    const copyToClipboard = (text, label) => {
+const FairnessCard: React.FC<FairnessCardProps> = ({ seed, hash, isWin }) => {
+    const copyToClipboard = (text: string, label: string): void => {
         navigator.clipboard.writeText(text);
         secureLog.info(`Copiado al portapapeles: ${label}`);
     };
 
     return (
-        <div className="fairness-card animate-fadeIn" style={{ animationDelay: '0.8s' }}>
+        <div className={`fairness-card animate-fadeIn ${isWin ? 'fairness-win' : 'fairness-loss'}`} style={{ animationDelay: '0.8s', borderColor: isWin ? '#4ade80' : '#f87171' }}>
             <div className="fairness-header">
                 <Icons.ShieldCheck size={18} />
                 <span className="fairness-header-title">Transparencia Garantizada</span>
@@ -141,8 +150,8 @@ const ArenaResults = () => {
 
                 <p className="text-xl text-secondary mb-8" style={{ position: 'relative', zIndex: 1 }}>
                     {outcome === 'win'
-                        ? `Recompensa del protocolo: $${rewardAmount} ${PLATFORM_CONFIG.CURRENCY}`
-                        : 'Protocolo resuelto sin asignación de recompensa'}
+                        ? `Recompensa del protocolo (${gameType.toUpperCase()}): $${rewardAmount} ${PLATFORM_CONFIG.CURRENCY}`
+                        : `Protocolo ${gameType.toUpperCase()} resuelto sin asignación de recompensa`}
                 </p>
 
                 <div className="flex-center flex-gap-4" style={{ position: 'relative', zIndex: 1 }}>

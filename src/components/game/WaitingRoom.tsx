@@ -7,14 +7,33 @@ import { motion } from 'framer-motion';
 
 import { GAME_CONFIG, ANIMATION_CONFIG, UI_CONFIG } from '../../constants/config';
 import * as Icons from '../ui/AnimatedLucideIcons';
+import type { Tier } from '../../constants/tiers';
 
-const TierIcon = ({ iconName, color, size = 32 }) => {
+/**
+ * Props for TierIcon component
+ */
+interface TierIconProps {
+    readonly iconName: keyof typeof Icons;
+    readonly color: string;
+    readonly size?: number;
+}
+
+/**
+ * Props for WaitingRoom component
+ */
+interface WaitingRoomProps {
+    readonly tier: Tier;
+    readonly onCancel: () => void;
+    readonly onMatchFound: () => void;
+}
+
+const TierIcon: React.FC<TierIconProps> = ({ iconName, color, size = 32 }) => {
     const IconComponent = Icons[iconName];
     if (!IconComponent) return null;
     return <IconComponent size={size} color={color} />;
 };
 
-const WaitingRoom = ({ tier, onCancel, onMatchFound }) => {
+const WaitingRoom: React.FC<WaitingRoomProps> = ({ tier, onCancel, onMatchFound }) => {
     // Validate tier prop
     if (!tier || typeof tier.amount !== 'number') {
         console.error('WaitingRoom: Invalid tier prop', tier);
@@ -50,7 +69,7 @@ const WaitingRoom = ({ tier, onCancel, onMatchFound }) => {
             >
                 <h2 className="text-secondary waiting-room-title">Buscando oponente...</h2>
                 <h3 className="waiting-room-pool" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem' }}>
-                    <TierIcon iconName={tier.icon} color={tierColor} />
+                    <TierIcon iconName={(tier.icon as keyof typeof Icons) ?? 'AnimatedCoin'} color={tierColor} />
                     <span>Pool de ${tier.amount}</span>
                 </h3>
 

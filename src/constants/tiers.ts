@@ -13,7 +13,13 @@ export interface Tier {
     readonly label: string;
     readonly color: string;
     readonly popular?: boolean;
+    readonly premium?: boolean;
 }
+
+/**
+ * Valid tier IDs as union type
+ */
+export type TierId = 1 | 2 | 3 | 4;
 
 /**
  * All available tiers as readonly array

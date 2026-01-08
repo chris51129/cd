@@ -16,14 +16,32 @@ import { createPortal } from 'react-dom';
 
 import './Tooltip.css';
 
-const Tooltip = ({ children, content, position = 'top', maxWidth = 300 }) => {
-    const [isVisible, setIsVisible] = useState(false);
-    const [coords, setCoords] = useState({ top: 0, left: 0 });
-    const triggerRef = useRef(null);
-    const tooltipRef = useRef(null);
-    const isTouchDevice = useRef(false);
+/**
+ * Props for Tooltip component
+ */
+interface TooltipProps {
+    readonly children: React.ReactNode;
+    readonly content: React.ReactNode;
+    readonly position?: 'top' | 'bottom';
+    readonly maxWidth?: number;
+}
 
-    const calculatePosition = useCallback(() => {
+/**
+ * Coordinates type
+ */
+interface Coords {
+    top: number;
+    left: number;
+}
+
+const Tooltip: React.FC<TooltipProps> = ({ children, content, position = 'top', maxWidth = 300 }) => {
+    const [isVisible, setIsVisible] = useState<boolean>(false);
+    const [coords, setCoords] = useState<Coords>({ top: 0, left: 0 });
+    const triggerRef = useRef<HTMLButtonElement>(null);
+    const tooltipRef = useRef<HTMLDivElement>(null);
+    const isTouchDevice = useRef<boolean>(false);
+
+    const calculatePosition = useCallback((): void => {
         if (!triggerRef.current) return;
 
         const triggerRect = triggerRef.current.getBoundingClientRect();
@@ -67,12 +85,12 @@ const Tooltip = ({ children, content, position = 'top', maxWidth = 300 }) => {
         setCoords({ top, left });
     }, [position, maxWidth]);
 
-    const show = useCallback(() => {
+    const show = useCallback((): void => {
         calculatePosition();
         setIsVisible(true);
     }, [calculatePosition]);
 
-    const hide = useCallback(() => {
+    const hide = useCallback((): void => {
         setIsVisible(false);
     }, []);
 
@@ -85,7 +103,7 @@ const Tooltip = ({ children, content, position = 'top', maxWidth = 300 }) => {
     useEffect(() => {
         if (!isVisible) return;
 
-        const handleClose = () => hide();
+        const handleClose = (): void => hide();
         window.addEventListener('scroll', handleClose, true);
         window.addEventListener('resize', handleClose);
 
@@ -99,10 +117,10 @@ const Tooltip = ({ children, content, position = 'top', maxWidth = 300 }) => {
     useEffect(() => {
         if (!isVisible) return;
 
-        const handleClickOutside = (e) => {
+        const handleClickOutside = (e: TouchEvent | MouseEvent): void => {
             if (
-                triggerRef.current && !triggerRef.current.contains(e.target) &&
-                tooltipRef.current && !tooltipRef.current.contains(e.target)
+                triggerRef.current && !triggerRef.current.contains(e.target as Node) &&
+                tooltipRef.current && !tooltipRef.current.contains(e.target as Node)
             ) {
                 hide();
             }
@@ -121,7 +139,7 @@ const Tooltip = ({ children, content, position = 'top', maxWidth = 300 }) => {
         };
     }, [isVisible, hide]);
 
-    const handleInteraction = useCallback((e) => {
+    const handleInteraction = useCallback((e: React.MouseEvent | React.KeyboardEvent): void => {
         e.preventDefault();
         e.stopPropagation();
 
@@ -166,4 +184,5 @@ const Tooltip = ({ children, content, position = 'top', maxWidth = 300 }) => {
         </>
     );
 };
-export default Tooltip;
+
+export default Tooltip;

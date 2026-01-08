@@ -5,10 +5,21 @@
 import React, { useEffect } from 'react';
 
 import { motion } from 'framer-motion';
-import { secureRandomInt, secureLog } from '../../utils/security';
+import { secureRandomInt } from '../../utils/security';
 import { GAME_CONFIG } from '../../constants/config';
 
-const SelectionScreen = ({ gameType, isChooser, selectionTimeLeft, onSelect, onAssignedReady }) => {
+/**
+ * Props for SelectionScreen component
+ */
+interface SelectionScreenProps {
+    readonly gameType: 'coinflip' | 'rps';
+    readonly isChooser: boolean;
+    readonly selectionTimeLeft?: number;
+    readonly onSelect: (choice: string) => void;
+    readonly onAssignedReady: (assigned: string) => void;
+}
+
+const SelectionScreen: React.FC<SelectionScreenProps> = ({ gameType, isChooser, selectionTimeLeft, onSelect, onAssignedReady }) => {
     // Usamos el tiempo del motor si está disponible, si no, fallback al config
     const timeLeft = selectionTimeLeft !== undefined ? selectionTimeLeft : (GAME_CONFIG.SELECTION_TIMEOUT_MS / 1000);
     const hasSelected = React.useRef(false);
@@ -33,12 +44,13 @@ const SelectionScreen = ({ gameType, isChooser, selectionTimeLeft, onSelect, onA
             }, delay);
             return () => clearTimeout(timer);
         }
+        return undefined;
     }, [isChooser, onAssignedReady, gameType]);
 
     // La lógica de auto-selección reside en el motor (useGameEngine)
     // Este componente solo se encarga de mostrar el contador visual y manejar el clic manual.
 
-    const handleSelect = (choice) => {
+    const handleSelect = (choice: string): void => {
         if (!hasSelected.current) {
             hasSelected.current = true;
             onSelect(choice);
@@ -63,7 +75,7 @@ const SelectionScreen = ({ gameType, isChooser, selectionTimeLeft, onSelect, onA
     // Helper calculate progress percentage (100% full at start, 0% at end)
     const progressPercent = (timeLeft / (GAME_CONFIG.SELECTION_TIMEOUT_MS / 1000)) * 100;
     // Color transition from Green -> Yellow -> Red based on time
-    const getTimerColor = () => {
+    const getTimerColor = (): string => {
         if (timeLeft > 6) return '#22c55e'; // Green
         if (timeLeft > 3) return '#eab308'; // Yellow
         return '#ef4444'; // Red
@@ -214,4 +226,5 @@ const SelectionScreen = ({ gameType, isChooser, selectionTimeLeft, onSelect, onA
         </div>
     );
 };
-export default SelectionScreen;
+
+export default SelectionScreen;

@@ -6,7 +6,6 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import MemoryCard from '../MemoryCard';
-import CountdownOverlay from '../CountdownOverlay';
 import {
     AnimatedActivity,
     AnimatedFingerprint,
@@ -30,7 +29,41 @@ const CRYPTO_ICONS = [
     AnimatedBrain
 ];
 
-const MemoryAnimation = ({ status, result = null, gameState = null, onCardClick = () => { } }) => {
+/**
+ * Memory game state
+ */
+interface MemoryGameState {
+    readonly board?: readonly number[];
+    readonly flippedIndices?: readonly number[];
+    readonly matchedIndices?: readonly number[];
+    readonly memoryScores?: { player: number; opponent: number };
+    readonly timeLeft?: number;
+    readonly memoryPhase?: 'memorize' | 'playing' | 'result';
+    readonly memorizePhaseNumber?: number;
+    readonly memorizeTimeLeft?: number;
+    readonly revealedIndices?: readonly number[];
+}
+
+/**
+ * Memory result
+ */
+interface MemoryResult {
+    readonly outcome: 'win' | 'loss' | 'draw';
+    readonly player?: number;
+    readonly opponent?: number;
+}
+
+/**
+ * Props for MemoryAnimation component
+ */
+interface MemoryAnimationProps {
+    readonly status: string;
+    readonly result?: MemoryResult | null;
+    readonly gameState?: MemoryGameState | null;
+    readonly onCardClick?: (index: number) => void;
+}
+
+const MemoryAnimation: React.FC<MemoryAnimationProps> = ({ status, result = null, gameState = null, onCardClick = () => { } }) => {
     const {
         board = [],
         flippedIndices = [],
@@ -46,11 +79,11 @@ const MemoryAnimation = ({ status, result = null, gameState = null, onCardClick 
     // Usar memoryScores directamente como scores para compatibilidad
     const scores = memoryScores;
 
-    // Determinar si estamos en fase de memorizació³n
+    // Determinar si estamos en fase de memorización
     const isMemorizing = memoryPhase === 'memorize';
 
     // Determinar el estado de cada carta (ANTI-CHEAT: solo mostrar las reveladas)
-    const getCardState = (index) => {
+    const getCardState = (index: number): 'flipped' | 'hidden' | 'matched' => {
         if (isMemorizing) {
             // Solo mostrar las cartas que están en revealedIndices
             return revealedIndices.includes(index) ? 'flipped' : 'hidden';
@@ -61,8 +94,8 @@ const MemoryAnimation = ({ status, result = null, gameState = null, onCardClick 
     };
 
     // Color del timer según tiempo restante
-    const getTimerColor = () => {
-        if (timeLeft <= 10) return '#ef4444'; // Rojo cró­tico (10s o menos)
+    const getTimerColor = (): string => {
+        if (timeLeft <= 10) return '#ef4444'; // Rojo crítico (10s o menos)
         if (timeLeft <= 20) return '#facc15'; // Amarillo advertencia (20s o menos)
         return '#ffffff'; // Blanco inicial (más de 20s)
     };
@@ -198,7 +231,7 @@ const MemoryAnimation = ({ status, result = null, gameState = null, onCardClick 
 
     // Pantalla de resultado final
     if (status === 'result' && result) {
-        const playerWins = result.player > result.opponent;
+        const playerWins = (result.player ?? 0) > (result.opponent ?? 0);
         return (
             <div className="text-center" style={{ padding: '2rem' }}>
                 <motion.div

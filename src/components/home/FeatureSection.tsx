@@ -4,7 +4,7 @@
  * Ley de Miller: Los usuarios pueden mantener 7±2 elementos en memoria.
  * Agrupamos juegos por categoría para reducir la carga cognitiva.
  */
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import StatCard from './StatCard';
 import GameCard from './GameCard';

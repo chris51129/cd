@@ -4,7 +4,6 @@
  * Implementa un toggle estético con animación de rotación
  * usando iconos de Lucide React.
  */
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';

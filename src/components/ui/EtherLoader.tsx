@@ -3,10 +3,22 @@ import { motion } from 'framer-motion';
 import './EtherLoader.css';
 
 /**
+ * Props for EtherLoader component
+ */
+interface EtherLoaderProps {
+    /** Primary prop name */
+    readonly message?: string;
+    /** Alias for message - for backwards compatibility */
+    readonly text?: string;
+}
+
+/**
  * EtherLoader - A premium particle-based loader.
  * Inspired by "data floating in the ether" aesthetic from Uiverse.io.
  */
-const EtherLoader = ({ message = "VALIDANDO PROTOCOLO..." }) => {
+const EtherLoader: React.FC<EtherLoaderProps> = ({ message, text }) => {
+    // Support both 'text' and 'message' props (text is alias)
+    const displayMessage = message ?? text ?? "VALIDANDO PROTOCOLO...";
     return (
         <div className="ether-loader-container">
             <div className="ether-core">
@@ -30,13 +42,13 @@ const EtherLoader = ({ message = "VALIDANDO PROTOCOLO..." }) => {
                 ))}
                 <div className="ether-center-glow"></div>
             </div>
-            {message && (
+            {displayMessage && (
                 <motion.div
                     className="ether-message"
                     animate={{ opacity: [0.4, 1, 0.4] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
                 >
-                    {message}
+                    {displayMessage}
                 </motion.div>
             )}
             <div className="ether-scanline"></div>

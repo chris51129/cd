@@ -121,7 +121,7 @@ export interface SafetyContextValue {
 /**
  * Valid sound identifiers
  */
-export type SoundId = 
+export type SoundId =
     | 'click'
     | 'hover'
     | 'win'
@@ -182,3 +182,42 @@ export interface PropsWithClassName {
 export interface StyledComponentProps extends PropsWithClassName {
     readonly style?: React.CSSProperties;
 }
+
+// ============================================
+// Observability (Protocolo Omega)
+// ============================================
+
+export type { Logger, LogLevel, LogEntry } from '../utils/logger';
+export { logger, setTraceId, getCurrentTraceId, resetTraceContext } from '../utils/logger';
+
+export type { Metrics, MetricName, MetricTags } from '../utils/metrics';
+export { metrics, trackGameStarted, trackGameCompleted, trackGameAbandoned } from '../utils/metrics';
+
+// ============================================
+// Branded Types (Parse, Don't Validate)
+// ============================================
+
+export type {
+    Brand,
+    UserId,
+    GameId as BrandedGameId,
+    TierId as BrandedTierId,
+    WalletAddress,
+    PositiveAmount,
+    HexColor,
+} from './branded';
+
+export {
+    UserId as UserIdParser,
+    GameId as GameIdParser,
+    TierId as TierIdParser,
+    WalletAddress as WalletAddressParser,
+    PositiveAmount as PositiveAmountParser,
+    HexColor as HexColorParser,
+    isUserId,
+    isGameId,
+    isTierId,
+    isWalletAddress,
+    isPositiveAmount,
+    isHexColor,
+} from './branded';

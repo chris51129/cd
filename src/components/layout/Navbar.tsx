@@ -7,9 +7,9 @@ import { secureLog } from '../../utils/security';
 import GameDropdown from './GameDropdown';
 import ThemeToggle from '../ui/ThemeToggle';
 
-const Navbar = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [isGamesDropdownOpen, setIsGamesDropdownOpen] = useState(false);
+const Navbar: React.FC = () => {
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [isGamesDropdownOpen, setIsGamesDropdownOpen] = useState<boolean>(false);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -17,18 +17,18 @@ const Navbar = () => {
     const { handleSafeNavigation } = useSafety();
 
     // BULLETPROOF: Programmatic smooth scroll to bypass CSS inconsistencies
-    const smoothScrollToTop = () => {
+    const smoothScrollToTop = (): void => {
         const startY = window.scrollY || document.documentElement.scrollTop;
         if (startY === 0) return; // Already at top
 
         const targetY = 0;
         const distance = targetY - startY;
         const duration = 1000;
-        let start = null;
+        let start: number | null = null;
 
-        const easeInOutCubic = (t) => t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+        const easeInOutCubic = (t: number): number => t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
 
-        const step = (timestamp) => {
+        const step = (timestamp: number): void => {
             if (!start) start = timestamp;
             const progress = timestamp - start;
             const percentage = Math.min(progress / duration, 1);
@@ -45,7 +45,7 @@ const Navbar = () => {
     };
 
     // Specific Action Creators
-    const goHome = () => {
+    const goHome = (): void => {
         if (location.pathname === '/') {
             smoothScrollToTop();
         } else {
@@ -55,7 +55,7 @@ const Navbar = () => {
         setIsOpen(false);
     };
 
-    const goExternal = (url) => {
+    const goExternal = (url: string): void => {
         secureLog.info('Navigation to', url);
         // For anchors, we must ensure we are on the Home page first
         if (url.startsWith('#')) {

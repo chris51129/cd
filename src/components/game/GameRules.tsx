@@ -1,12 +1,20 @@
-﻿import React from 'react';
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 
 import { AnimatedActivity } from '../ui/AnimatedLucideIcons';
+import type { GameRules as GameRulesType } from '../../constants/games';
+
+/**
+ * Props for GameRules component
+ * Uses canonical GameRules type from constants/games.ts
+ */
+interface GameRulesProps {
+    readonly rules: GameRulesType | null;
+}
 
 /**
  * GameRules - displays mechanics, win conditions and penalties for a game
  */
-const GameRules = ({ rules }) => {
+const GameRules: React.FC<GameRulesProps> = ({ rules }) => {
     if (!rules) return null;
 
     return (

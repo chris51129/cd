@@ -11,7 +11,7 @@
  * Genera un hash de interacción (simulación para UI)
  * En producción: Este valor vendrá del evento emitido por el smart contract.
  */
-export const generateGameHash = (seed, result) => {
+export const generateGameHash = (seed: string, result: unknown): string => {
     const combined = `${seed}-${JSON.stringify(result)}`;
 
     // Función simple de hash para el ejemplo
@@ -29,7 +29,7 @@ export const generateGameHash = (seed, result) => {
  * Genera una semilla de servidor usando CSPRNG
  * En producción: La semilla real se generará on-chain usando blockhash + VRF.
  */
-export const generateServerSeed = () => {
+export const generateServerSeed = (): string => {
     const buffer = new Uint8Array(16);
     crypto.getRandomValues(buffer);
     return Array.from(buffer).map(b => b.toString(16).padStart(2, '0')).join('');

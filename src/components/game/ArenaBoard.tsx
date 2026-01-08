@@ -9,11 +9,11 @@ import { EtherLoader } from '../ui';
 import SelectionScreen from './SelectionScreen';
 import { CoinFlipAnimation, DiceAnimation, RPSAnimation, MemoryAnimation, QuickDrawAnimation, BlockValidationAnimation } from './animations';
 
-const ArenaBoard = () => {
+const ArenaBoard: React.FC = () => {
     const { gameState, gameType, actions } = useArena();
     const { phase, status, isChooser, playerSide, result } = gameState;
 
-    const renderPositionContext = () => {
+    const renderPositionContext = (): React.ReactNode => {
         if (gameType === 'rps') return null;
         if (gameType !== 'coinflip') return null;
 
@@ -38,28 +38,28 @@ const ArenaBoard = () => {
         );
     };
 
-    const renderAnimation = () => {
+    const renderAnimation = (): React.ReactNode => {
         switch (gameType) {
             case 'coinflip':
                 return (
                     <CoinFlipAnimation
                         status={status}
-                        result={result}
+                        result={result as 'heads' | 'tails' | null | undefined}
                         gameState={{
                             selectionTimeLeft: gameState.selectionTimeLeft
                         }}
                     />
                 );
-            case 'dice': return <DiceAnimation status={status} result={result} />;
+            case 'dice': return <DiceAnimation status={status} result={result as { player?: number; opponent?: number; outcome?: 'win' | 'loss' | 'draw' } | null} />;
             case 'rps':
                 return (
                     <RPSAnimation
                         status={status}
-                        result={result}
+                        result={result as { player?: 'rock' | 'paper' | 'scissors'; opponent?: 'rock' | 'paper' | 'scissors'; outcome?: 'win' | 'loss' | 'draw' } | null}
                         gameState={{
                             selectionTimeLeft: gameState.selectionTimeLeft,
                             drawCount: gameState.drawCount,
-                            rpsResult: gameState.rpsResult
+                            rpsResult: gameState.rpsResult as { player?: 'rock' | 'paper' | 'scissors'; opponent?: 'rock' | 'paper' | 'scissors'; outcome?: 'win' | 'loss' | 'draw' } | undefined
                         }}
                     />
                 );
@@ -67,7 +67,7 @@ const ArenaBoard = () => {
                 return (
                     <MemoryAnimation
                         status={status}
-                        result={result}
+                        result={result as { outcome: 'win' | 'loss' | 'draw'; player?: number; opponent?: number } | null}
                         gameState={{
                             board: gameState.board,
                             flippedIndices: gameState.flippedIndices,
@@ -86,7 +86,7 @@ const ArenaBoard = () => {
                 return (
                     <QuickDrawAnimation
                         status={status}
-                        result={result}
+                        result={result as { outcome: 'win' | 'loss'; reactionTime?: number; timeout?: boolean; hasPenalty?: boolean } | null}
                         gameState={{
                             quickDrawState: gameState.quickDrawState,
                             countdownLeft: gameState.countdownLeft,
@@ -99,7 +99,7 @@ const ArenaBoard = () => {
                 return (
                     <BlockValidationAnimation
                         status={status}
-                        result={result}
+                        result={result as { outcome: 'win' | 'loss' | 'draw'; playerTime?: number; opponentTime?: number; errors?: number; timeout?: boolean } | null}
                         gameState={{
                             blockGrid: gameState.blockGrid,
                             blockNextTarget: gameState.blockNextTarget,
@@ -120,7 +120,7 @@ const ArenaBoard = () => {
         <div className="arena-board-container w-full flex-center flex-col">
             {phase === 'selection' && (
                 <SelectionScreen
-                    gameType={gameType}
+                    gameType={gameType as 'coinflip' | 'rps'}
                     isChooser={isChooser}
                     selectionTimeLeft={gameState.selectionTimeLeft} // Sincronizado con el motor
                     onSelect={actions.selectSide}

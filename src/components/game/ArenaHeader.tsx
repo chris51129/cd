@@ -6,19 +6,28 @@ import { useArena } from './ArenaContext';
 import { PLATFORM_CONFIG } from '../../constants/config';
 import * as AnimatedIcons from '../ui/AnimatedLucideIcons';
 
-const TierIcon = ({ iconName, color, size = 32 }) => {
+/**
+ * Props for TierIcon component
+ */
+interface TierIconProps {
+    readonly iconName: keyof typeof AnimatedIcons;
+    readonly color: string;
+    readonly size?: number;
+}
+
+const TierIcon: React.FC<TierIconProps> = ({ iconName, color, size = 32 }) => {
     const IconComponent = AnimatedIcons[iconName];
     if (!IconComponent) return null;
     return <IconComponent size={size} color={color} />;
 };
 
-const ArenaHeader = () => {
+const ArenaHeader: React.FC = () => {
     const { gameState, gameType, tier } = useArena();
     const { phase } = gameState;
 
     if (gameType === 'memory') return null;
 
-    const renderScoreboard = () => {
+    const renderScoreboard = (): React.ReactNode => {
         if (gameType !== 'rps') return null;
 
         const drawCount = gameState.drawCount || 0;
@@ -46,7 +55,7 @@ const ArenaHeader = () => {
                     {gameType === 'rps' ? <AnimatedIcons.AnimatedRPS size={32} /> :
                         gameType === 'coinflip' ? <AnimatedIcons.AnimatedCoin size={32} /> :
                             gameType === 'dice' ? <AnimatedIcons.AnimatedDice size={32} /> :
-                                <TierIcon iconName={tier.icon} color={tier.color} size={32} />}
+                                <TierIcon iconName={(tier.icon ?? 'AnimatedCoin') as keyof typeof AnimatedIcons} color={tier.color ?? '#2E5CFF'} size={32} />}
                 </span>
                 <span>${tier.amount} {PLATFORM_CONFIG.CURRENCY}</span>
             </div>

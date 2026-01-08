@@ -1,7 +1,6 @@
 /**
  * ArenaStatus - Sub-componente de GameArena
  */
-import React from 'react';
 import { motion } from 'framer-motion';
 import { useArena } from './ArenaContext';
 import { EtherLoader } from '../ui';

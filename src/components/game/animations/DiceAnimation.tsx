@@ -5,7 +5,24 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const DiceAnimation = ({ status, result }) => {
+/**
+ * Dice result type
+ */
+interface DiceResult {
+    readonly player?: number;
+    readonly opponent?: number;
+    readonly outcome?: 'win' | 'loss' | 'draw';
+}
+
+/**
+ * Props for DiceAnimation component
+ */
+interface DiceAnimationProps {
+    readonly status: string;
+    readonly result?: DiceResult | null;
+}
+
+const DiceAnimation: React.FC<DiceAnimationProps> = ({ status, result }) => {
     // Variants for animation states
     const diceVariants = {
         idle: {

@@ -1,13 +1,13 @@
 import {
     Flame,
-    ShieldCheck,
     HandCoins,
     CircleDollarSign,
     TrendingUp,
-    Activity,
     Brain,
     LayoutGrid,
-    Sparkles
+    Sparkles,
+    LucideIcon,
+    LucideProps
 } from 'lucide-react';
 import {
     AnimatedActivity,
@@ -24,24 +24,32 @@ import {
 import AnimatedIcon from './AnimatedIcon';
 
 /**
+ * Icon props type
+ * Uses Omit to exclude 'size' from LucideProps, then redefine as number only
+ */
+interface IconProps extends Omit<Partial<LucideProps>, 'size'> {
+    readonly size?: number;
+}
+
+/**
  * Animated Icons
  * Premium animated versions using Lucide + Framer Motion
  */
-export const AnimatedFlame = (props) => (
-    <AnimatedIcon icon={Flame} preset="flame" color="#D64933" strokeWidth={1.5} {...props} />
+export const AnimatedFlame: React.FC<IconProps> = ({ size, className, strokeWidth }) => (
+    <AnimatedIcon icon={Flame} preset="flame" color="#D64933" strokeWidth={typeof strokeWidth === 'number' ? strokeWidth : 1.5} size={typeof size === 'number' ? size : undefined} className={className} />
 );
 
 
-export const AnimatedCoins = (props) => (
-    <AnimatedIcon icon={HandCoins} preset="pulse" color="#D4AF37" strokeWidth={1.5} {...props} />
+export const AnimatedCoins: React.FC<IconProps> = ({ size, className, strokeWidth }) => (
+    <AnimatedIcon icon={HandCoins} preset="pulse" color="#D4AF37" strokeWidth={typeof strokeWidth === 'number' ? strokeWidth : 1.5} size={typeof size === 'number' ? size : undefined} className={className} />
 );
 
-export const AnimatedBalance = (props) => (
-    <AnimatedIcon icon={CircleDollarSign} preset="pulse" color="#F5F5F7" strokeWidth={1.5} {...props} />
+export const AnimatedBalance: React.FC<IconProps> = ({ size, className, strokeWidth }) => (
+    <AnimatedIcon icon={CircleDollarSign} preset="pulse" color="#F5F5F7" strokeWidth={typeof strokeWidth === 'number' ? strokeWidth : 1.5} size={typeof size === 'number' ? size : undefined} className={className} />
 );
 
-export const AnimatedTrend = (props) => (
-    <AnimatedIcon icon={TrendingUp} preset="bounce" color="currentColor" strokeWidth={1.5} {...props} />
+export const AnimatedTrend: React.FC<IconProps> = ({ size, className, strokeWidth }) => (
+    <AnimatedIcon icon={TrendingUp} preset="bounce" color="currentColor" strokeWidth={typeof strokeWidth === 'number' ? strokeWidth : 1.5} size={typeof size === 'number' ? size : undefined} className={className} />
 );
 
 
@@ -121,9 +129,13 @@ export const GridIcon = () => (
  * Filter out animateOnHover prop to prevent React DOM warnings
  * Pattern: Prop filtering wrapper for third-party components
  */
-const withAnimateOnHoverFilter = (LucideIcon) => {
-    const WrappedIcon = ({ animateOnHover, ...rest }) => <LucideIcon {...rest} />;
-    WrappedIcon.displayName = `Wrapped${LucideIcon.displayName || LucideIcon.name || 'Icon'}`;
+interface WrappedIconProps extends Partial<LucideProps> {
+    readonly animateOnHover?: boolean;
+}
+
+const withAnimateOnHoverFilter = (LucideIconComponent: LucideIcon): React.FC<WrappedIconProps> => {
+    const WrappedIcon: React.FC<WrappedIconProps> = ({ animateOnHover, ...rest }) => <LucideIconComponent {...rest} />;
+    WrappedIcon.displayName = `Wrapped${LucideIconComponent.displayName || LucideIconComponent.name || 'Icon'}`;
     return WrappedIcon;
 };
 

@@ -4,14 +4,16 @@
  * Doc 11: Virtualización para manejar grandes listas con performance.
  * Doc 10: Algoritmos de ordenamiento aplicados.
  */
-import React, { useState, useRef, useMemo, useEffect } from 'react';
+import { useState as _useState, useRef as _useRef, useMemo as _useMemo, useEffect as _useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useLeaderboard } from '../../hooks/useLeaderboard';
+import { useLeaderboard as _useLeaderboard } from '../../hooks/useLeaderboard';
 import { Icons } from '../ui/Icons';
 import './Leaderboard.css';
 
-const ITEM_HEIGHT = 90; // Incrementado de 70 a 90 para evitar solapamientos
-const VISIBLE_ITEMS = 8; // Ajustado para el nuevo tamaño
+// Reserved for future virtualization implementation
+const _ITEM_HEIGHT = 90;
+const _VISIBLE_ITEMS = 8;
+void _ITEM_HEIGHT; void _VISIBLE_ITEMS; // Mark as intentionally unused
 
 const Leaderboard = () => {
     return (

@@ -54,7 +54,7 @@ export const AnimatedActivity = ({ size = 24, color = "currentColor", strokeWidt
 export const AnimatedFingerprint = ({ size = 24, color = "currentColor", strokeWidth = 2, className = "", animateOnHover = false }) => {
     const pathVariants = {
         normal: { pathLength: 1, opacity: 1 },
-        animate: (i) => ({
+        animate: (i: number) => ({
             opacity: [0, 1, 1, 0.5, 1],
             pathLength: [0, 1],
             transition: {
@@ -162,7 +162,7 @@ export const AnimatedShieldCheck = ({ size = 24, color = "currentColor", strokeW
  * Pulsing connectors and core grid.
  */
 export const AnimatedCPU = ({ size = 24, color = "currentColor", strokeWidth = 2, className = "", animateOnHover = false }) => {
-    const pulseVariants = (isX) => ({
+    const pulseVariants = (isX: boolean) => ({
         normal: { scaleX: 1, scaleY: 1, opacity: 1 },
         animate: {
             [isX ? 'scaleX' : 'scaleY']: [1, 1.3, 1],
@@ -346,7 +346,7 @@ export const AnimatedDice = ({ size = 24, color = "currentColor", strokeWidth = 
 export const AnimatedRPS = ({ size = 24, color = "currentColor", strokeWidth = 2, className = "", animateOnHover = false }) => {
     const itemVariants = {
         normal: { opacity: 0.4, scale: 1 },
-        animate: (i) => ({
+        animate: (i: number) => ({
             opacity: [0.4, 1, 0.4],
             scale: [1, 1.2, 1],
             transition: {
@@ -431,7 +431,7 @@ export const AnimatedBrain = ({ size = 24, color = "currentColor", strokeWidth =
         }
     };
 
-    const pulseVariants = (i) => ({
+    const pulseVariants = (i: number) => ({
         normal: { opacity: 1 },
         animate: {
             opacity: [0.3, 1, 0.3],
@@ -478,7 +478,7 @@ export const AnimatedBrain = ({ size = 24, color = "currentColor", strokeWidth =
 export const AnimatedGrid = ({ size = 24, color = "currentColor", strokeWidth = 2, className = "", animateOnHover = false }) => {
     const tileVariants = {
         normal: { opacity: 1, scale: 1 },
-        animate: (i) => ({
+        animate: (i: number) => ({
             opacity: [1, 0.3, 1],
             scale: [1, 0.9, 1],
             transition: {

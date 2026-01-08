@@ -2,7 +2,20 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ConfirmationModal = ({ isOpen, title, message, onConfirm, onCancel, confirmText = "Confirmar", cancelText = "Cancelar" }) => {
+/**
+ * Props for ConfirmationModal component
+ */
+interface ConfirmationModalProps {
+    readonly isOpen: boolean;
+    readonly title: string;
+    readonly message: string;
+    readonly onConfirm: () => void;
+    readonly onCancel: () => void;
+    readonly confirmText?: string;
+    readonly cancelText?: string;
+}
+
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, title, message, onConfirm, onCancel, confirmText = "Confirmar", cancelText = "Cancelar" }) => {
     // FLEXBOX STRATEGY:
     // Instead of two separate fixed layers (backdrop + modal), we make ONE fixed container
     // that covers the screen and uses Flexbox to center the modal content.
