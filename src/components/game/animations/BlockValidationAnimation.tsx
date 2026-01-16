@@ -2,9 +2,14 @@
  * BlockValidationAnimation - Schulte Table 5x5
  * Juego de velocidad de procesamiento visual.
  * El jugador debe hacer clic en números del 1 al 25 en orden secuencial.
+ * 
+ * OPTIMIZATION (Protocolo Optimización):
+ * - requestAnimationFrame con delta time en lugar de setInterval
+ * - Estilos estáticos fuera del render
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import type { CSSProperties } from 'react';
 
 import CountdownOverlay from '../CountdownOverlay';
 import './BlockValidation.css';
@@ -43,6 +48,52 @@ interface BlockValidationAnimationProps {
     readonly onCellClick?: (number: number) => void;
 }
 
+// ============================================
+// Static Styles (no GC pressure)
+// ============================================
+
+const STYLES: Readonly<Record<string, CSSProperties>> = Object.freeze({
+    countdownContainer: {
+        width: '100%',
+        maxWidth: '400px',
+        margin: '1.5rem auto 0',
+        minHeight: '400px',
+        position: 'relative',
+    },
+    textCenter: { textAlign: 'center' },
+    tabularNums: { fontVariantNumeric: 'tabular-nums' },
+    resultPadding: { padding: '2rem' },
+    resultPanel: {
+        borderRadius: '12px',
+        padding: '1rem',
+        marginBottom: '1rem',
+        fontFamily: 'monospace',
+    },
+    defaultContainer: {
+        width: '100%',
+        maxWidth: '400px',
+        margin: '1.5rem auto 0',
+        padding: '1rem',
+        minHeight: '400px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
+
+// Dynamic style creators (memoized outside component)
+const createResultIconStyle = (isWin: boolean): CSSProperties => ({
+    color: isWin ? '#22c55e' : '#ef4444',
+    textShadow: '0 0 20px rgba(0,0,0,0.5)',
+});
+
+const createResultTotalStyle = (isWin: boolean): CSSProperties => ({
+    color: isWin ? '#22c55e' : '#ef4444',
+});
+
+// Timer update interval
+const TIMER_UPDATE_MS = 50;
+
 const BlockValidationAnimation: React.FC<BlockValidationAnimationProps> = ({ status, result, gameState, onCellClick }) => {
     const {
         blockGrid = [],
@@ -54,17 +105,35 @@ const BlockValidationAnimation: React.FC<BlockValidationAnimationProps> = ({ sta
         countdownLeft = 5
     } = gameState || {};
 
-    // Timer en vivo (elapsed time - for internal logs/stats if needed)
+    // Timer en vivo (elapsed time) - usando requestAnimationFrame
     const [elapsedTime, setElapsedTime] = useState(0);
+    const frameIdRef = useRef<number | null>(null);
+    const lastUpdateRef = useRef(0);
 
     useEffect(() => {
-        if (blockState === 'playing' && blockStartTime > 0) {
-            const interval = setInterval(() => {
-                setElapsedTime(Math.floor(performance.now() - blockStartTime));
-            }, 50); // Actualizar cada 50ms para fluidez
-            return () => clearInterval(interval);
+        if (blockState !== 'playing' || blockStartTime <= 0) {
+            setElapsedTime(0);
+            return;
         }
-        return undefined;
+
+        const animate = (time: number): void => {
+            // Actualizar cada TIMER_UPDATE_MS para fluidez
+            if (time - lastUpdateRef.current >= TIMER_UPDATE_MS) {
+                setElapsedTime(Math.floor(performance.now() - blockStartTime));
+                lastUpdateRef.current = time;
+            }
+            frameIdRef.current = requestAnimationFrame(animate);
+        };
+
+        lastUpdateRef.current = performance.now();
+        frameIdRef.current = requestAnimationFrame(animate);
+
+        return () => {
+            if (frameIdRef.current !== null) {
+                cancelAnimationFrame(frameIdRef.current);
+                frameIdRef.current = null;
+            }
+        };
     }, [blockState, blockStartTime]);
 
     // Formatear tiempo (segundos)
@@ -95,13 +164,7 @@ const BlockValidationAnimation: React.FC<BlockValidationAnimationProps> = ({ sta
     // ========== COUNTDOWN PHASE ==========
     if (status === 'spin' && showCountdown) {
         return (
-            <div className="block-validation-container" style={{
-                width: '100%',
-                maxWidth: '400px',
-                margin: '1.5rem auto 0',
-                minHeight: '400px',
-                position: 'relative'
-            }}>
+            <div className="block-validation-container" style={STYLES.countdownContainer}>
                 <CountdownOverlay
                     isActive={true}
                     countdownValue={countdownLeft}
@@ -122,7 +185,7 @@ const BlockValidationAnimation: React.FC<BlockValidationAnimationProps> = ({ sta
                 {/* Header: Timer + Tiempo Transcurrido + Errores */}
                 <div className="block-validation-header">
                     {/* Timer (Countdown) */}
-                    <div style={{ textAlign: 'center' }}>
+                    <div style={STYLES.textCenter}>
                         <div className="block-stat-label">
                             Tiempo
                         </div>
@@ -133,28 +196,28 @@ const BlockValidationAnimation: React.FC<BlockValidationAnimationProps> = ({ sta
                         >
                             {formatSeconds(blockTimeLeft)}
                         </motion.div>
-                    </div >
+                    </div>
 
                     {/* Tiempo Transcurrido (elapsedTime en ms) */}
-                    <div style={{ textAlign: 'center' }}>
+                    <div style={STYLES.textCenter}>
                         <div className="block-stat-label">
                             Transcurrido
                         </div>
-                        <div className="block-stat-value neutral" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                        <div className="block-stat-value neutral" style={STYLES.tabularNums}>
                             {(elapsedTime / 1000).toFixed(2)}s
                         </div>
                     </div>
 
                     {/* Errores */}
-                    < div style={{ textAlign: 'center' }}>
+                    <div style={STYLES.textCenter}>
                         <div className="block-stat-label">
                             Errores
                         </div>
                         <div className={`block-stat-value ${blockErrors > 0 ? 'error' : 'neutral'}`}>
                             {blockErrors}
-                        </div >
-                    </div >
-                </div >
+                        </div>
+                    </div>
+                </div>
 
                 {/* Grid 5x5 */}
                 <div className="block-grid">
@@ -172,10 +235,9 @@ const BlockValidationAnimation: React.FC<BlockValidationAnimationProps> = ({ sta
                                 {number}
                             </button>
                         );
-                    })
-                    }
-                </div >
-            </div >
+                    })}
+                </div>
+            </div>
         );
     }
 
@@ -193,7 +255,7 @@ const BlockValidationAnimation: React.FC<BlockValidationAnimationProps> = ({ sta
         };
 
         return (
-            <div className="text-center" style={{ padding: '2rem' }}>
+            <div className="text-center" style={STYLES.resultPadding}>
                 <motion.div
                     initial={{ scale: 0.5, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
@@ -201,27 +263,19 @@ const BlockValidationAnimation: React.FC<BlockValidationAnimationProps> = ({ sta
                 >
                     <div
                         className="text-6xl mb-4"
-                        style={{
-                            color: isWin ? '#22c55e' : '#ef4444',
-                            textShadow: '0 0 20px rgba(0,0,0,0.5)',
-                        }}
+                        style={createResultIconStyle(isWin)}
                     >
                         {isWin ? '🎉' : '😔'}
                     </div>
                     <h2
                         className="text-4xl font-bold mb-4"
-                        style={{ color: isWin ? '#22c55e' : '#ef4444' }}
+                        style={createResultTotalStyle(isWin)}
                     >
                         {isWin ? '¡VICTORIA!' : (result.timeout ? '¡TIEMPO AGOTADO!' : 'DERROTA')}
                     </h2>
 
                     {/* Desglose de tiempos */}
-                    <div className="result-breakdown-panel" style={{
-                        borderRadius: '12px',
-                        padding: '1rem',
-                        marginBottom: '1rem',
-                        fontFamily: 'monospace',
-                    }}>
+                    <div className="result-breakdown-panel" style={STYLES.resultPanel}>
                         <div className="result-label">
                             Tu tiempo: <span className="result-value">{formatResultTime(result.playerTime ?? 0)}</span>
                         </div>
@@ -230,7 +284,7 @@ const BlockValidationAnimation: React.FC<BlockValidationAnimationProps> = ({ sta
                                 Penalización ({result.errors} errores): +{formatResultTime(penalty)}
                             </div>
                         )}
-                        <div className="result-total" style={{ color: isWin ? '#22c55e' : '#ef4444' }}>
+                        <div className="result-total" style={createResultTotalStyle(isWin)}>
                             Total: {formatResultTime(totalTime)}
                         </div>
                         <div className="result-opponent">
@@ -244,16 +298,7 @@ const BlockValidationAnimation: React.FC<BlockValidationAnimationProps> = ({ sta
 
     // Estado por defecto (preparando)
     return (
-        <div className="block-validation-container" style={{
-            width: '100%',
-            maxWidth: '400px',
-            margin: '1.5rem auto 0',
-            padding: '1rem',
-            minHeight: '400px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-        }}>
+        <div className="block-validation-container" style={STYLES.defaultContainer}>
             <div className="text-center text-secondary">
                 <p>Preparando tablero...</p>
             </div>

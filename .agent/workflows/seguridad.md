@@ -1,5 +1,5 @@
 ---
-description: Instrucciones sobre seguridad del proyecto
+description: Inspiración para seguridad del proyecto web3
 ---
 
 Guía Maestra de Seguridad Web3 P2P: Protocolos de Confianza Cero.

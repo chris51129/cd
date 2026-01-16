@@ -54,12 +54,17 @@ let currentTraceId: string | null = null;
 let _currentSpanId: string | null = null; // Reserved for future span correlation
 void _currentSpanId; // Mark as intentionally unused for now
 
+// IE11 polyfill type
+interface WindowWithMsCrypto extends Window {
+    readonly msCrypto?: Crypto;
+}
+
 /**
  * Generate unique trace ID
  * WHY: Usar crypto para IDs únicos
  */
 function generateTraceId(): string {
-    const crypto = window.crypto || (window as any).msCrypto;
+    const crypto = window.crypto || (window as WindowWithMsCrypto).msCrypto;
     const bytes = new Uint8Array(16);
     crypto.getRandomValues(bytes);
     return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
@@ -69,7 +74,7 @@ function generateTraceId(): string {
  * Generate unique span ID
  */
 function generateSpanId(): string {
-    const crypto = window.crypto || (window as any).msCrypto;
+    const crypto = window.crypto || (window as WindowWithMsCrypto).msCrypto;
     const bytes = new Uint8Array(8);
     crypto.getRandomValues(bytes);
     return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
