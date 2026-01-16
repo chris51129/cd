@@ -42,19 +42,23 @@ const CountdownOverlay: React.FC<CountdownOverlayProps> = ({
     // Variantes de estilo
     const variants = {
         default: {
-            bgColor: 'rgba(15, 23, 42, 0.95)',
-            accentColor: '#3b82f6',
-            textColor: '#ffffff'
+            bgColor: 'var(--bg-overlay-dark)', // Adapts to theme (Solid dark in dark mode, White-ish in light mode for overlays if defined properly, or use specific variable)
+            // Actually, for overlay covering game, we want it readable.
+            // If light mode overlay is white, text must be dark.
+            // If dark mode overlay is dark, text must be white.
+            // Using theme vars ensures this.
+            accentColor: 'var(--accent-blue)',
+            textColor: 'var(--text-primary)'
         },
         memorize: {
-            bgColor: 'rgba(15, 23, 42, 0.85)',
-            accentColor: '#8b5cf6',
-            textColor: '#ffffff'
+            bgColor: 'var(--bg-overlay-dark)',
+            accentColor: 'var(--accent-blue)', // Purple might not be defined as var, sticking to blue or hex if strictly needed, but accent-blue is safe
+            textColor: 'var(--text-primary)'
         },
         danger: {
-            bgColor: 'rgba(15, 23, 42, 0.95)',
-            accentColor: '#ef4444',
-            textColor: '#ffffff'
+            bgColor: 'var(--bg-overlay-dark)',
+            accentColor: '#ef4444', // Tailwind red-500 usually safe or define var
+            textColor: 'var(--text-primary)'
         }
     };
 

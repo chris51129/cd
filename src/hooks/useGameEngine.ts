@@ -136,6 +136,8 @@ const useGameEngine = ({ gameType, onFinish }: UseGameEngineProps): UseGameEngin
     const isProcessingRef = useRef(false);
     const lastClickTimeRef = useRef(0);
     const opponentTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const blockStartTimeRef = useRef<number>(0); // Real timestamp for BlockValidation
+    const quickDrawSignalTimeRef = useRef<number>(0); // Real timestamp for QuickDraw signal
 
     // ========== GAME LOOP (replaces all setTimeout for timing) ==========
 
@@ -161,20 +163,18 @@ const useGameEngine = ({ gameType, onFinish }: UseGameEngineProps): UseGameEngin
         if (gameType === 'memory') {
             const pairs = [0, 1, 2, 3, 4, 5, 6, 7];
             const doubled = [...pairs, ...pairs];
-            const _board = secureShuffleArray(doubled);
+            const board = secureShuffleArray(doubled);
 
-            // Select initial revealed indices
+            // Select initial revealed indices for memorize phase
             const available = Array.from({ length: 16 }, (_, i) => i);
             const shuffled = secureShuffleArray(available);
-            const _initialRevealed = shuffled.slice(0, 4);
+            const revealedIndices = shuffled.slice(0, 4);
 
-            // TODO: Add SET_BOARD action to reducer for proper initialization
-            void _board;
-            void _initialRevealed;
-
+            // Use SET_BOARD to initialize the game with shuffled board
             dispatch({
-                type: 'INIT',
-                gameType: 'memory'
+                type: 'SET_BOARD',
+                board,
+                revealedIndices
             });
         }
 
@@ -185,8 +185,13 @@ const useGameEngine = ({ gameType, onFinish }: UseGameEngineProps): UseGameEngin
         } else if (gameType === 'dice') {
             // Dice auto-rolls
             dispatch({ type: 'CONFIRM_ASSIGNED', side: 'auto' });
-        } else if (gameType === 'quickdraw' || gameType === 'blockvalidation') {
+        } else if (gameType === 'quickdraw') {
             dispatch({ type: 'START_PLAYING' });
+        } else if (gameType === 'blockvalidation') {
+            // Generate shuffled grid 1-25 for BlockValidation
+            const numbers = Array.from({ length: 25 }, (_, i) => i + 1);
+            const blockGrid = secureShuffleArray(numbers);
+            dispatch({ type: 'SET_BLOCK_GRID', blockGrid });
         }
     }, [state.phase, gameType, strategy]);
 
@@ -239,6 +244,81 @@ const useGameEngine = ({ gameType, onFinish }: UseGameEngineProps): UseGameEngin
         strategy.spin(context as unknown as Parameters<typeof strategy.spin>[0]);
     }, GAME_CONFIG.SPIN_DURATION_MS, state.phase === PHASES.SPIN && state.status === 'spin');
 
+    // ========== MEMORY: Memorize Phase Transition ==========
+
+    useEffect(() => {
+        if (gameType !== 'memory') return;
+        if (state.memoryPhase !== 'memorize') return;
+        if (state.memorizeTimeLeft > 0) return;
+
+        secureLog.info(`[Memory] Memorize phase ${state.memorizePhaseNumber} complete`);
+
+        // Generate new random indices for next phase or start playing
+        const available = Array.from({ length: 16 }, (_, i) => i);
+        const shuffled = secureShuffleArray(available);
+        const newIndices = shuffled.slice(0, 4);
+
+        dispatch({ type: 'NEXT_MEMORIZE_PHASE', newIndices });
+    }, [gameType, state.memoryPhase, state.memorizeTimeLeft, state.memorizePhaseNumber]);
+
+    // ========== QUICKDRAW: Countdown → Waiting ==========
+
+    useEffect(() => {
+        if (gameType !== 'quickdraw') return;
+        if (state.quickDrawState !== 'countdown') return;
+        if (state.countdownLeft > 0) return;
+
+        secureLog.info('[QuickDraw] Countdown complete, entering waiting phase');
+        dispatch({ type: 'START_PLAYING' });
+    }, [gameType, state.quickDrawState, state.countdownLeft]);
+
+    // ========== BLOCKVALIDATION: Countdown → Playing ==========
+
+    useEffect(() => {
+        if (gameType !== 'blockvalidation') return;
+        if (state.blockState !== 'countdown') return;
+        if (state.countdownLeft > 0) return;
+
+        secureLog.info('[BlockValidation] Countdown complete, starting game');
+        blockStartTimeRef.current = performance.now(); // Set real timestamp
+        dispatch({ type: 'START_PLAYING' });
+    }, [gameType, state.blockState, state.countdownLeft]);
+
+    // ========== BLOCKVALIDATION: Timeout (Time Up) ==========
+
+    useEffect(() => {
+        if (gameType !== 'blockvalidation') return;
+        if (state.blockState !== 'playing') return;
+        if (state.blockTimeLeft > 0) return;
+        if (hasFinished.current) return;
+
+        secureLog.warn('[BlockValidation] Time up! Finishing game');
+
+        // Calculate player progress and time
+        const playerProgress = state.blockNextTarget - 1;
+        const playerTime = performance.now() - blockStartTimeRef.current;
+        const opponentTime = secureRandomInt(8000, 15000);
+        const opponentProgress = secureRandomInt(15, 25);
+
+        const isWin = playerProgress > opponentProgress ||
+            (playerProgress === opponentProgress && playerTime < opponentTime);
+
+        dispatch({
+            type: 'FINISH_GAME',
+            isWin,
+            result: {
+                playerTime,
+                opponentTime,
+                errors: state.blockErrors,
+                timeout: true,
+                playerProgress,
+                opponentProgress,
+                outcome: isWin ? 'win' : 'loss'
+            }
+        });
+        hasFinished.current = true;
+    }, [gameType, state.blockState, state.blockTimeLeft, state.blockNextTarget, state.blockErrors]);
+
     // ========== QUICKDRAW: Waiting → Signal ==========
 
     useEffect(() => {
@@ -250,6 +330,7 @@ const useGameEngine = ({ gameType, onFinish }: UseGameEngineProps): UseGameEngin
 
         const timer = setTimeout(() => {
             if (hasFinished.current) return;
+            quickDrawSignalTimeRef.current = performance.now();
             dispatch({ type: 'QUICK_DRAW_SIGNAL' });
         }, delay);
 
@@ -307,6 +388,24 @@ const useGameEngine = ({ gameType, onFinish }: UseGameEngineProps): UseGameEngin
         }
     }, [gameType, state.memoryPhase, state.memoryScores, state.timeLeft]);
 
+    // ========== MEMORY: Auto Flip Back (Non-Match) ==========
+
+    useEffect(() => {
+        if (gameType !== 'memory') return;
+
+        // If 2 cards are flipped, it means NO MATCH (otherwise reducer would have cleared them)
+        if (state.flippedIndices.length === 2) {
+            isProcessingRef.current = true; // Block input visually/logic
+
+            const timer = setTimeout(() => {
+                dispatch({ type: 'FLIP_BACK' });
+                isProcessingRef.current = false;
+            }, 1000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [gameType, state.flippedIndices]);
+
     // ========== FINISH CALLBACK ==========
 
     useEffect(() => {
@@ -332,31 +431,12 @@ const useGameEngine = ({ gameType, onFinish }: UseGameEngineProps): UseGameEngin
         if (isProcessingRef.current) return;
 
         lastClickTimeRef.current = now;
-        isProcessingRef.current = true;
-
         dispatch({ type: 'CARD_CLICK', index });
-
-        // Check for non-match flip back
-        if (state.flippedIndices.length === 1) {
-            // Will be 2 after dispatch
-            const first = state.flippedIndices[0];
-            const second = index;
-
-            if (state.board[first] !== state.board[second]) {
-                setTimeout(() => {
-                    dispatch({ type: 'CARD_CLICK', index: -1 }); // Reset flipped
-                    isProcessingRef.current = false;
-                }, 1000);
-                return;
-            }
-        }
-
-        isProcessingRef.current = false;
-    }, [state.flippedIndices, state.board]);
+    }, []);
 
     const handleQuickDrawClick = useCallback((): void => {
         if (state.quickDrawState === 'signal' && !hasFinished.current) {
-            const reactionTime = performance.now() - state.startTime;
+            const reactionTime = Math.floor(performance.now() - quickDrawSignalTimeRef.current);
             const penalty = state.hasPenalty ? 1000 : 0;
             const totalTime = reactionTime + penalty;
 
@@ -366,10 +446,17 @@ const useGameEngine = ({ gameType, onFinish }: UseGameEngineProps): UseGameEngin
             dispatch({
                 type: 'FINISH_GAME',
                 isWin,
-                result: { player: totalTime, opponent: opponentTime }
+                result: {
+                    reactionTime: totalTime,
+                    opponent: opponentTime,
+                    hasPenalty: state.hasPenalty,
+                    penaltyMs: penalty,
+                    outcome: isWin ? 'win' : 'loss'
+                }
             });
             hasFinished.current = true;
-        } else {
+        } else if (state.quickDrawState === 'waiting') {
+            // Mark penalty for early click
             dispatch({ type: 'QUICK_DRAW_CLICK' });
         }
     }, [state.quickDrawState, state.startTime, state.hasPenalty]);
@@ -377,20 +464,29 @@ const useGameEngine = ({ gameType, onFinish }: UseGameEngineProps): UseGameEngin
     const handleBlockCellClick = useCallback((clickedNumber: number): void => {
         dispatch({ type: 'BLOCK_CELL_CLICK', number: clickedNumber });
 
-        // Check for completion
+        // Check for completion (clicked final target 25)
         if (clickedNumber === state.blockNextTarget && state.blockNextTarget === 25) {
-            const totalTime = performance.now() - state.blockStartTime;
+            const playerTime = performance.now() - blockStartTimeRef.current;
+            const penalty = state.blockErrors * 500; // 500ms per error
+            const totalTime = playerTime + penalty;
             const opponentTime = secureRandomInt(8000, 15000);
             const isWin = totalTime < opponentTime;
 
             dispatch({
                 type: 'FINISH_GAME',
                 isWin,
-                result: { player: totalTime, opponent: opponentTime }
+                result: {
+                    playerTime,
+                    opponentTime,
+                    errors: state.blockErrors,
+                    totalTime,
+                    completed: true,
+                    outcome: isWin ? 'win' : 'loss'
+                }
             });
             hasFinished.current = true;
         }
-    }, [state.blockNextTarget, state.blockStartTime]);
+    }, [state.blockNextTarget, state.blockErrors]);
 
     // ========== RETURN ==========
 

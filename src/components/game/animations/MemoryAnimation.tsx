@@ -97,7 +97,7 @@ const MemoryAnimation: React.FC<MemoryAnimationProps> = ({ status, result = null
     const getTimerColor = (): string => {
         if (timeLeft <= 10) return '#ef4444'; // Rojo crítico (10s o menos)
         if (timeLeft <= 20) return '#facc15'; // Amarillo advertencia (20s o menos)
-        return '#ffffff'; // Blanco inicial (más de 20s)
+        return 'var(--text-primary)'; // Theme-aware inicial (más de 20s)
     };
 
     // Renderizar el tablero durante el juego
@@ -145,7 +145,7 @@ const MemoryAnimation: React.FC<MemoryAnimationProps> = ({ status, result = null
                                     fontWeight: 'bold',
                                     color: 'var(--accent-blue)'
                                 }}>
-                                    Â¡MEMORIZA! {memorizeTimeLeft.toFixed(1)}s
+                                    ¡MEMORIZA! {memorizeTimeLeft.toFixed(1)}s
                                 </div>
                             </motion.div>
                         </motion.div>
@@ -233,31 +233,98 @@ const MemoryAnimation: React.FC<MemoryAnimationProps> = ({ status, result = null
     if (status === 'result' && result) {
         const playerWins = (result.player ?? 0) > (result.opponent ?? 0);
         return (
-            <div className="text-center" style={{ padding: '2rem' }}>
+            <div className="flex flex-col items-center justify-center p-8 w-full" style={{ minHeight: '400px' }}>
                 <motion.div
-                    initial={{ scale: 0.5, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.5 }}
+                    initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+                    style={{
+                        background: 'var(--bg-surface)',
+                        border: '1px solid var(--text-muted)',
+                        borderRadius: 'var(--radius-lg)',
+                        padding: '3rem',
+                        boxShadow: playerWins
+                            ? '0 0 40px rgba(34, 197, 94, 0.2)'
+                            : '0 0 40px rgba(239, 68, 68, 0.2)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '1.5rem',
+                        maxWidth: '400px',
+                        width: '100%'
+                    }}
                 >
-                    <div
-                        className="text-6xl mb-4"
-                        style={{
-                            color: playerWins ? '#4ade80' : '#f87171',
-                            textShadow: '0 0 20px rgba(0,0,0,0.5)',
-                        }}
-                    >
-                        {playerWins ? 'ðŸŽ‰' : 'ðŸ˜”'}
+                    {/* Icon / Status */}
+                    <div style={{
+                        fontSize: '4rem',
+                        marginBottom: '0.5rem',
+                        filter: playerWins ? 'drop-shadow(0 0 10px rgba(34, 197, 94, 0.5))' : 'drop-shadow(0 0 10px rgba(239, 68, 68, 0.5))'
+                    }}>
+                        {playerWins ? '🏆' : '💀'}
                     </div>
-                    <h2
-                        className="text-4xl font-bold mb-4"
-                        style={{ color: playerWins ? '#4ade80' : '#f87171' }}
-                    >
-                        {playerWins ? 'Â¡VICTORIA!' : 'DERROTA'}
+
+                    <h2 style={{
+                        fontSize: 'var(--text-2xl)',
+                        fontWeight: 'bold',
+                        color: playerWins ? '#22c55e' : '#ef4444',
+                        margin: 0,
+                        fontFamily: 'var(--font-heading)',
+                        letterSpacing: '-0.02em'
+                    }}>
+                        {playerWins ? '¡VICTORIA!' : 'DERROTA'}
                     </h2>
-                    <div className="text-xl text-secondary mb-8">
-                        <span style={{ color: '#4ade80' }}>Tú: {result.player}</span>
-                        {' vs '}
-                        <span style={{ color: '#f87171' }}>Oponente: {result.opponent}</span>
+
+                    {/* Score Breakdown */}
+                    <div style={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.75rem',
+                        marginTop: '1rem'
+                    }}>
+                        {/* Player Score */}
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            padding: '1rem 1.25rem',
+                            background: 'var(--bg-surface-hover)',
+                            borderRadius: 'var(--radius-md)',
+                            border: '1px solid var(--text-muted)'
+                        }}>
+                            <span style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-sans)', fontWeight: 500 }}>
+                                Tu Puntuación
+                            </span>
+                            <span style={{
+                                color: playerWins ? '#22c55e' : 'var(--text-primary)',
+                                fontWeight: '700',
+                                fontFamily: 'var(--font-heading)',
+                                fontSize: '1.25rem'
+                            }}>
+                                {result.player}
+                            </span>
+                        </div>
+
+                        {/* Opponent Score */}
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            padding: '1rem 1.25rem',
+                            background: 'var(--bg-surface-hover)',
+                            borderRadius: 'var(--radius-md)',
+                            border: '1px solid var(--text-muted)'
+                        }}>
+                            <span style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-sans)', fontWeight: 500 }}>
+                                Oponente
+                            </span>
+                            <span style={{
+                                color: !playerWins ? '#ef4444' : 'var(--text-primary)',
+                                fontWeight: '700',
+                                fontFamily: 'var(--font-heading)',
+                                fontSize: '1.25rem'
+                            }}>
+                                {result.opponent}
+                            </span>
+                        </div>
                     </div>
                 </motion.div>
             </div>

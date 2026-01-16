@@ -126,7 +126,9 @@ export type GameAction =
     | { type: 'START_PLAYING' }
     | { type: 'NEXT_MEMORIZE_PHASE'; newIndices: readonly number[] }
     | { type: 'SET_BOARD'; board: readonly number[]; revealedIndices: readonly number[] }
-    | { type: 'FINISH_GAME'; isWin: boolean; result: unknown };
+    | { type: 'SET_BLOCK_GRID'; blockGrid: readonly number[] }
+    | { type: 'FINISH_GAME'; isWin: boolean; result: unknown }
+    | { type: 'FLIP_BACK' };
 
 // ============================================
 // Initial State Factory
@@ -141,7 +143,8 @@ export const createInitialState = (gameType: GameType): GameState => ({
     gameType,
     phase: PHASES.SETUP,
     status: 'idle',
-    isChooser: false,
+    // WHY: RPS and coinflip require user selection, so isChooser must be true
+    isChooser: gameType === 'rps' || gameType === 'coinflip',
     playerSide: null,
     result: null,
     outcome: null,
@@ -261,8 +264,9 @@ const handleStartSelection = (state: GameState): GameState => {
  * WHY: Also allows transition from SETUP for games like coinflip/rps
  */
 const handleSelectSide = (state: GameState, side: string): GameState => {
-    // From SELECTION phase - select and go to spin
-    if (state.phase === PHASES.SELECTION) {
+    // From SELECTION phase - select and go to spin ONLY if valid side provided
+    // WHY: Empty side means no selection yet, must wait for user input
+    if (state.phase === PHASES.SELECTION && side !== '') {
         return {
             ...state,
             playerSide: side,
@@ -375,15 +379,29 @@ const handleQuickDrawClick = (state: GameState): GameState => {
 
 /**
  * Handle FINISH_GAME action
+ * WHY: Must update game-specific sub-states for UI components to show result panel
  */
 const handleFinishGame = (state: GameState, isWin: boolean, result: unknown): GameState => {
-    return {
+    const baseResult = {
         ...state,
         phase: PHASES.RESULT,
         status: 'result',
         outcome: isWin ? OUTCOMES.WIN : OUTCOMES.LOSS,
         result,
     };
+
+    // Update game-specific sub-states for UI components
+    if (state.gameType === 'quickdraw') {
+        return { ...baseResult, quickDrawState: 'result' as const };
+    }
+    if (state.gameType === 'blockvalidation') {
+        return { ...baseResult, blockState: 'result' as const };
+    }
+    if (state.gameType === 'memory') {
+        return { ...baseResult, memoryPhase: 'result' as const };
+    }
+
+    return baseResult;
 };
 
 /**
@@ -423,11 +441,17 @@ const handleNextMemorizePhase = (state: GameState, newIndices: readonly number[]
 
 /**
  * Handle START_PLAYING action
+ * WHY: Transitions skill games from SETUP to active gameplay
  */
 const handleStartPlaying = (state: GameState): GameState => {
     if (state.gameType === 'quickdraw') {
         if (state.quickDrawState !== 'countdown') return state;
-        return { ...state, quickDrawState: 'waiting' };
+        return {
+            ...state,
+            quickDrawState: 'waiting',
+            phase: PHASES.SPIN,
+            status: 'spin'
+        };
     }
 
     if (state.gameType === 'blockvalidation') {
@@ -436,6 +460,8 @@ const handleStartPlaying = (state: GameState): GameState => {
             ...state,
             blockState: 'playing',
             blockStartTime: state.elapsedMs,
+            phase: PHASES.SPIN,
+            status: 'spin'
         };
     }
 
@@ -637,6 +663,27 @@ const handleSetBoard = (state: GameState, board: readonly number[], revealedIndi
     };
 };
 
+/**
+ * Handle SET_BLOCK_GRID action (for blockvalidation game initialization)
+ * WHY: Allows shell to set shuffled grid before starting the game
+ */
+const handleSetBlockGrid = (state: GameState, blockGrid: readonly number[]): GameState => {
+    if (state.gameType !== 'blockvalidation') return state;
+
+    return {
+        ...state,
+        blockGrid,
+        blockNextTarget: 1,
+        blockErrors: 0,
+        blockState: 'countdown',
+        blockTimeLeft: 45, // Reset to TIME_LIMIT_SECONDS
+        blockStartTime: 0, // Will be set correctly in handleStartPlaying
+        countdownLeft: 5, // Reset countdown
+        phase: PHASES.SPIN,
+        status: 'spin',
+    };
+};
+
 // ============================================
 // Main Reducer
 // ============================================
@@ -665,6 +712,9 @@ export const gameReducer = (state: GameState, action: GameAction): GameState => 
 
         case 'CARD_CLICK':
             return handleCardClick(state, action.index);
+
+        case 'FLIP_BACK':
+            return handleFlipBack(state);
 
         case 'OPPONENT_MATCH':
             return handleOpponentMatch(state);
@@ -701,6 +751,9 @@ export const gameReducer = (state: GameState, action: GameAction): GameState => 
 
         case 'SET_BOARD':
             return handleSetBoard(state, action.board, action.revealedIndices);
+
+        case 'SET_BLOCK_GRID':
+            return handleSetBlockGrid(state, action.blockGrid);
 
         case 'FINISH_GAME':
             return handleFinishGame(state, action.isWin, action.result);

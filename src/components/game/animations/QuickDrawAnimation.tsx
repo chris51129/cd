@@ -27,8 +27,10 @@ interface QuickDrawGameState {
 interface QuickDrawResult {
     readonly outcome?: 'win' | 'loss' | 'draw';
     readonly reactionTime?: number;
+    readonly opponent?: number;
     readonly timeout?: boolean;
     readonly hasPenalty?: boolean;
+    readonly penaltyMs?: number;
 }
 
 /**
@@ -40,6 +42,7 @@ interface Visuals {
     sub: string;
     scale: number | number[];
     duration: number;
+    showResultPanel?: boolean;
 }
 
 /**
@@ -92,15 +95,10 @@ const QuickDrawAnimation: React.FC<QuickDrawAnimationProps> = ({ status, result,
                 return {
                     bg: win ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)',
                     text: win ? '¡VICTORIA!' : 'DERROTA',
-                    sub: win
-                        ? `Tiempo: ${result.reactionTime}ms`
-                        : result?.timeout
-                            ? '¡Tiempo agotado!'
-                            : result?.hasPenalty
-                                ? `Penalizado: ${result.reactionTime}ms`
-                                : `Muy lento: ${result?.reactionTime}ms`,
+                    sub: '',
                     scale: 1,
-                    duration: 0
+                    duration: 0,
+                    showResultPanel: true
                 };
             default:
                 return {
@@ -140,44 +138,145 @@ const QuickDrawAnimation: React.FC<QuickDrawAnimationProps> = ({ status, result,
             {/* ========== GAMEPLAY / RESULT PHASE ========== */}
             {isGameActive && !showCountdown && (
                 <AnimatePresence mode='wait'>
-                    <motion.button
-                        key={quickDrawState}
-                        className="trigger-button"
-                        onClick={() => isClickable && onAction && onAction()}
-                        disabled={!isClickable}
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{
-                            scale: visuals.scale,
-                            opacity: 1,
-                            backgroundColor: visuals.bg,
-                            boxShadow: quickDrawState === 'signal' ? '0 0 50px #22c55e' : '0 0 20px rgba(0,0,0,0.5)'
-                        }}
-                        transition={{
-                            duration: visuals.duration,
-                            repeat: quickDrawState === 'waiting' ? Infinity : 0
-                        }}
-                        style={{
-                            width: '300px',
-                            height: '300px',
-                            borderRadius: '50%',
-                            border: 'none',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            cursor: isClickable ? 'pointer' : 'default',
-                            color: '#fff',
-                            outline: 'none',
-                            WebkitTapHighlightColor: 'transparent'
-                        }}
-                    >
-                        <h2 style={{ fontSize: '2.5rem', fontWeight: 'bold', margin: 0, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
-                            {visuals.text}
-                        </h2>
-                        <p style={{ fontSize: '1rem', opacity: 0.9, marginTop: '0.5rem' }}>
-                            {visuals.sub}
-                        </p>
-                    </motion.button>
+                    {/* Círculo de acción (waiting/signal) */}
+                    {!visuals.showResultPanel && (
+                        <motion.button
+                            key={quickDrawState}
+                            className="trigger-button"
+                            onClick={() => isClickable && onAction && onAction()}
+                            disabled={!isClickable}
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{
+                                scale: visuals.scale,
+                                opacity: 1,
+                                backgroundColor: visuals.bg,
+                                boxShadow: quickDrawState === 'signal' ? '0 0 50px #22c55e' : '0 0 20px rgba(0,0,0,0.5)'
+                            }}
+                            transition={{
+                                duration: visuals.duration,
+                                repeat: quickDrawState === 'waiting' ? Infinity : 0
+                            }}
+                            style={{
+                                width: '300px',
+                                height: '300px',
+                                borderRadius: '50%',
+                                border: 'none',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: isClickable ? 'pointer' : 'default',
+                                color: '#fff',
+                                outline: 'none',
+                                WebkitTapHighlightColor: 'transparent'
+                            }}
+                        >
+                            <h2 style={{ fontSize: '2.5rem', fontWeight: 'bold', margin: 0, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
+                                {visuals.text}
+                            </h2>
+                            <p style={{ fontSize: '1rem', opacity: 0.9, marginTop: '0.5rem' }}>
+                                {visuals.sub}
+                            </p>
+                        </motion.button>
+                    )}
+
+                    {/* Panel de Resultado - Theme-Aware */}
+                    {visuals.showResultPanel && result && (
+                        <motion.div
+                            key="result-panel"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.4 }}
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: '1.5rem',
+                                padding: '2rem',
+                                background: 'var(--bg-surface)',
+                                borderRadius: 'var(--radius-md)',
+                                border: '1px solid var(--text-muted)',
+                                boxShadow: result.outcome === 'win'
+                                    ? '0 0 30px rgba(34, 197, 94, 0.3)'
+                                    : '0 0 30px rgba(239, 68, 68, 0.3)',
+                                minWidth: '320px'
+                            }}
+                        >
+                            {/* Título Victoria/Derrota */}
+                            <h2 style={{
+                                fontSize: 'var(--text-2xl)',
+                                fontWeight: 'bold',
+                                color: result.outcome === 'win' ? '#22c55e' : '#ef4444',
+                                margin: 0,
+                                fontFamily: 'var(--font-heading)'
+                            }}>
+                                {result.outcome === 'win' ? '¡VICTORIA!' : 'DERROTA'}
+                            </h2>
+
+                            {/* Breakdown de tiempos */}
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '0.75rem',
+                                width: '100%'
+                            }}>
+                                {/* Tu tiempo */}
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    padding: '0.75rem 1rem',
+                                    background: 'var(--bg-surface-hover)',
+                                    borderRadius: 'var(--radius-sm)'
+                                }}>
+                                    <span style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-sans)' }}>Tu tiempo</span>
+                                    <span style={{
+                                        color: 'var(--text-primary)',
+                                        fontWeight: '600',
+                                        fontFamily: 'var(--font-heading)',
+                                        fontVariantNumeric: 'tabular-nums'
+                                    }}>
+                                        {result.reactionTime}ms
+                                    </span>
+                                </div>
+
+                                {/* Penalización (si aplica) */}
+                                {result.hasPenalty && (
+                                    <div style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        padding: '0.75rem 1rem',
+                                        background: 'rgba(239, 68, 68, 0.1)',
+                                        borderRadius: 'var(--radius-sm)',
+                                        border: '1px solid rgba(239, 68, 68, 0.3)'
+                                    }}>
+                                        <span style={{ color: '#ef4444' }}>⚠️ Penalización</span>
+                                        <span style={{ color: '#ef4444', fontWeight: '600' }}>
+                                            +{result.penaltyMs || 1000}ms
+                                        </span>
+                                    </div>
+                                )}
+
+                                {/* Tiempo oponente */}
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    padding: '0.75rem 1rem',
+                                    background: 'var(--bg-surface-hover)',
+                                    borderRadius: 'var(--radius-sm)'
+                                }}>
+                                    <span style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-sans)' }}>Oponente</span>
+                                    <span style={{
+                                        color: 'var(--text-secondary)',
+                                        fontWeight: '600',
+                                        fontVariantNumeric: 'tabular-nums'
+                                    }}>
+                                        {result.opponent}ms
+                                    </span>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
                 </AnimatePresence>
             )}
         </div>

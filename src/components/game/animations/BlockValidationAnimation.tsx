@@ -182,7 +182,7 @@ const BlockValidationAnimation: React.FC<BlockValidationAnimationProps> = ({ sta
 
         return (
             <div className="block-validation-container">
-                {/* Header: Timer + Tiempo Transcurrido + Errores */}
+                {/* Header: Timer + Errores (Dark Tech Elegance) */}
                 <div className="block-validation-header">
                     {/* Timer (Countdown) */}
                     <div style={STYLES.textCenter}>
@@ -196,16 +196,6 @@ const BlockValidationAnimation: React.FC<BlockValidationAnimationProps> = ({ sta
                         >
                             {formatSeconds(blockTimeLeft)}
                         </motion.div>
-                    </div>
-
-                    {/* Tiempo Transcurrido (elapsedTime en ms) */}
-                    <div style={STYLES.textCenter}>
-                        <div className="block-stat-label">
-                            Transcurrido
-                        </div>
-                        <div className="block-stat-value neutral" style={STYLES.tabularNums}>
-                            {(elapsedTime / 1000).toFixed(2)}s
-                        </div>
                     </div>
 
                     {/* Errores */}

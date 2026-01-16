@@ -5,6 +5,8 @@
  * - requestAnimationFrame con delta time en lugar de setInterval
  * - Estilos estáticos fuera del render
  * - Objetos de animación memoizados
+ * 
+ * STYLE: Dark Tech Elegance - minimalismo escandinavo con toques tech
  */
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
@@ -43,11 +45,23 @@ interface RPSAnimationProps {
 }
 
 // ============================================
-// Static Styles (no GC pressure)
+// Static Styles (Dark Tech Elegance)
 // ============================================
 
 const STYLES: Readonly<Record<string, CSSProperties>> = Object.freeze({
-    container: { gap: '3rem' },
+    container: {
+        gap: '3rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%'
+    },
+    handWrapper: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '0.75rem'
+    },
     iconPlayer: { fontSize: '5rem' },
     iconOpponent: { fontSize: '5rem', transform: 'scaleX(-1)' },
 });
@@ -102,29 +116,34 @@ const RPSAnimation: React.FC<RPSAnimationProps> = ({ status, result }) => {
 
     const currentCycle = CYCLE_ORDER[cycleIndex];
 
+    // WHY: Always use result values - they are guaranteed to be set by spin completion
+    // Fallback to 'rock' only as defensive coding, should never actually happen
+    const playerChoice = result?.player ?? 'rock';
+    const opponentChoice = result?.opponent ?? 'rock';
+
     return (
-        <div className="flex-center flex-gap-4" style={STYLES.container}>
+        <div style={STYLES.container}>
             {/* Player Hand */}
-            <div className="text-center">
-                <div className="text-secondary text-xs mb-4">TÚ</div>
+            <div style={STYLES.handWrapper as CSSProperties}>
+                <span className="text-secondary text-xs font-semibold tracking-wider uppercase">TÚ</span>
                 <motion.div
                     animate={status === 'spin' ? { y: [0, -20, 0] } : { scale: [1, 1.2, 1] }}
                     transition={{ duration: 0.5, repeat: status === 'spin' ? Infinity : 0 }}
                     style={STYLES.iconPlayer}
                 >
-                    {status === 'spin' ? ICONS[currentCycle] : ICONS[result?.player ?? 'rock']}
+                    {status === 'spin' ? ICONS[currentCycle] : ICONS[playerChoice]}
                 </motion.div>
             </div>
 
             {/* Opponent Hand */}
-            <div className="text-center">
-                <div className="text-secondary text-xs mb-4">OPONENTE</div>
+            <div style={STYLES.handWrapper as CSSProperties}>
+                <span className="text-secondary text-xs font-semibold tracking-wider uppercase">OPONENTE</span>
                 <motion.div
                     animate={status === 'spin' ? { y: [0, -20, 0] } : { scale: [1, 1.2, 1] }}
                     transition={{ duration: 0.5, repeat: status === 'spin' ? Infinity : 0, delay: 0.1 }}
                     style={STYLES.iconOpponent}
                 >
-                    {status === 'spin' ? ICONS[currentCycle] : ICONS[result?.opponent ?? 'rock']}
+                    {status === 'spin' ? ICONS[currentCycle] : ICONS[opponentChoice]}
                 </motion.div>
             </div>
         </div>
