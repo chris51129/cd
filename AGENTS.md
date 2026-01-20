@@ -22,25 +22,12 @@
 ```
 src/
 ├── components/     # UI Components (ver src/components/AGENTS.md)
-│   ├── game/       # Componentes de juego (animaciones, overlays)
-│   ├── ui/         # Componentes base (Button, Card, Modal)
-│   └── layout/     # Layout components
 ├── games/          # Lógica de juegos (ver src/games/AGENTS.md)
-│   └── core/       # gameReducer.ts, estrategias
 ├── hooks/          # Custom hooks (useGameEngine, useGameLoop)
 ├── pages/          # Páginas de la app
 ├── styles/         # CSS Variables, base styles
 ├── store/          # Zustand stores
 └── utils/          # Utilidades
-```
-
-## Comandos Esenciales
-
-```bash
-npm run dev        # Servidor desarrollo (localhost:5173)
-npm run build      # Build producción
-npm test           # Ejecutar tests
-npm run lint       # Linting
 ```
 
 ## Navegación a Sub-Contextos
@@ -49,22 +36,89 @@ npm run lint       # Linting
 |--------|-----------|-------------|
 | Source | [src/AGENTS.md](src/AGENTS.md) | Convenciones generales |
 | Components | [src/components/AGENTS.md](src/components/AGENTS.md) | UI y Design System |
-| Games | [src/games/AGENTS.md](src/games/AGENTS.md) | Lógica de juegos |
+| Games | [src/games/AGENTS.md](src/games/AGENTS.md) | Arquitectura Shell/Reducer |
+
+---
 
 ## Auto-invoke Skills
 
 > **IMPORTANTE:** Cuando trabajes en las siguientes áreas, DEBES leer la skill correspondiente ANTES de implementar.
 
-| Cuando trabajes con... | Skill a invocar | Path |
-|------------------------|-----------------|------|
+### Skills Específicas de CryptoDuels (Scope: root)
+
+| Cuando trabajes con... | Skill | Path |
+|------------------------|-------|------|
 | Crear/modificar juegos de habilidad | `cryptoduels-games` | `.agent/skills/cryptoduels-games/SKILL.md` |
 | Componentes UI, animaciones, estilos | `cryptoduels-ui` | `.agent/skills/cryptoduels-ui/SKILL.md` |
 | gameReducer.ts, acciones, handlers | `cryptoduels-reducer` | `.agent/skills/cryptoduels-reducer/SKILL.md` |
-| Smart contracts Solidity | `smart-contract-generator` | `.agent/skills/smart-contract-generator/SKILL.md` |
-| Tests de componentes/hooks | `webapp-testing` | `.agent/skills/webapp-testing/SKILL.md` |
-| Tests de contratos | `web3-testing` | `.agent/skills/web3-testing/SKILL.md` |
-| Seguridad Web3 | `solidity-security` | `.agent/skills/solidity-security/SKILL.md` |
-| Estado React/Zustand | `react-state-management` | `.agent/skills/react-state-management/SKILL.md` |
+
+### Skills Web3/Blockchain (Scope: root)
+
+| Cuando trabajes con... | Skill | Path |
+|------------------------|-------|------|
+| Smart contracts Solidity | `smart-contract-generator` | `.agent/skills/smart-contract-generator/` |
+| Seguridad de contratos | `solidity-security` | `.agent/skills/solidity-security/` |
+| Tests de contratos | `web3-testing` | `.agent/skills/web3-testing/` |
+| Seguridad blockchain | `web3-security` | `.agent/skills/web3-security/` |
+| Protocolos DeFi | `defi-protocol-templates` | `.agent/skills/defi-protocol-templates/` |
+
+### Skills de Desarrollo Frontend (Scope: UI/components)
+
+| Cuando trabajes con... | Skill | Path |
+|------------------------|-------|------|
+| Diseño UI/UX profesional | `ui-ux-pro-max` | `.agent/skills/ui-ux-pro-max/` |
+| Diseño frontend general | `frontend-design` | `.agent/skills/frontend-design/` |
+| Patrones React | `react-patterns` | `.agent/skills/react-patterns/` |
+| Estado React/Zustand | `react-state-management` | `.agent/skills/react-state-management/` |
+| Tailwind CSS v4 | `tailwind-patterns` | `.agent/skills/tailwind-patterns/` |
+| Tipos avanzados TS | `typescript-advanced-types` | `.agent/skills/typescript-advanced-types/` |
+
+### Skills de Testing (Scope: tests)
+
+| Cuando trabajes con... | Skill | Path |
+|------------------------|-------|------|
+| Tests de componentes/hooks | `webapp-testing` | `.agent/skills/webapp-testing/` |
+| Patrones de testing | `testing-patterns` | `.agent/skills/testing-patterns/` |
+| Tests JavaScript | `javascript-testing-patterns` | `.agent/skills/javascript-testing-patterns/` |
+| TDD workflow | `tdd-workflow` | `.agent/skills/tdd-workflow/` |
+
+### Skills de Arquitectura (Scope: root)
+
+| Cuando trabajes con... | Skill | Path |
+|------------------------|-------|------|
+| Decisiones arquitectónicas | `architecture` | `.agent/skills/architecture/` |
+| Patrones de API | `api-patterns` | `.agent/skills/api-patterns/` |
+| Diseño de base de datos | `database-design` | `.agent/skills/database-design/` |
+| Código limpio | `clean-code` | `.agent/skills/clean-code/` |
+
+---
+
+## Workflows Disponibles
+
+Usa `/nombre-workflow` para ejecutar:
+
+### Del Proyecto (Español)
+- `/calidad-global` - Estándares de calidad
+- `/desarrollo-web3` - Estándar Solidity/EVM
+- `/seguridad` - Seguridad Web3
+- `/seguridad-general-ts-html` - Seguridad frontend
+- `/optimizacion` - Optimización del proyecto
+- `/patrones-de-diseno` - Patrones de diseño
+
+### Del Kit (Inglés)
+- `/brainstorm` - Brainstorming estructurado
+- `/create` - Crear aplicación nueva
+- `/debug` - Debugging sistemático
+- `/deploy` - Despliegue producción
+- `/enhance` - Mejorar features
+- `/orchestrate` - Coordinar agentes
+- `/plan` - Plan de proyecto
+- `/preview` - Servidor desarrollo
+- `/status` - Estado del proyecto
+- `/test` - Tests
+- `/ui-ux-pro-max` - Diseño UI/UX con Design System Generator
+
+---
 
 ## Código de Estilo
 
@@ -86,20 +140,17 @@ npm run lint       # Linting
 | Dice | Probabilidad | Dado más alto gana |
 | Higher/Lower | Probabilidad | Predice si la carta es mayor o menor |
 
-## Workflows Disponibles
-
-Usa `/nombre-workflow` para ejecutar:
-- `/calidad-global` - Estándares de calidad
-- `/desarrollo-web3` - Estándar Solidity/EVM
-- `/seguridad` - Seguridad Web3
-- `/optimizacion` - Optimización del proyecto
+---
 
 ## Documentación del Sistema
 
-> Para entender, mantener o extender este sistema de AGENTS.md y Skills, consultar:
+📖 **[docs/AGENTS_AND_SKILLS_GUIDE.md](docs/AGENTS_AND_SKILLS_GUIDE.md)** - Guía completa del sistema de AGENTS.md y Skills.
 
-📖 **[docs/AGENTS_AND_SKILLS_GUIDE.md](docs/AGENTS_AND_SKILLS_GUIDE.md)** - Guía completa con:
-- Filosofía y conceptos
-- Procedimientos paso a paso
-- Plan de extensión a Web3 (ejemplo concreto del proyecto)
-- Troubleshooting
+## Comandos Esenciales
+
+```bash
+npm run dev        # Servidor desarrollo (localhost:5173)
+npm run build      # Build producción
+npm test           # Ejecutar tests
+npm run lint       # Linting
+```

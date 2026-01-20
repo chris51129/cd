@@ -89,3 +89,7 @@ describe('gameReducer', () => {
 | Cualquier lógica de juego | `cryptoduels-games` |
 | gameReducer.ts | `cryptoduels-reducer` |
 | Testing juegos | `webapp-testing` |
+| Patrones de testing | `testing-patterns` |
+| Game development general | `game-development` |
+| Debugging sistemático | `systematic-debugging` |
+

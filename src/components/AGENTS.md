@@ -64,19 +64,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 ## Componentes de Juego
 
 ### GameArena
-Contenedor principal de juegos. Props:
-- `gameType`: Tipo de juego
-- `status`: Estado actual
-- `result`: Resultado (si terminó)
+Contenedor principal. Props: `gameType`, `status`, `result`
 
 ### CountdownOverlay
-Overlay de cuenta regresiva. Variants:
-- `default`: Azul (preparación)
-- `memorize`: Púrpura (memorización)
-- `danger`: Rojo (tiempo crítico)
+Overlay de cuenta regresiva. Variants: `default`, `memorize`, `danger`
 
-### Animaciones de Juego
-Patrón estándar:
+### Patrón de Animaciones
 ```tsx
 interface Props {
     readonly status: string;
@@ -86,27 +79,19 @@ interface Props {
 }
 
 const TuJuegoAnimation: React.FC<Props> = ({ status, result, gameState, onAction }) => {
-    // Renderizar según status
     if (status === 'result' && result) {
         return <ResultPanel result={result} />;
     }
-    
     return <GameplayUI gameState={gameState} onAction={onAction} />;
 };
 ```
 
 ## Light/Dark Mode
 
-Los componentes deben funcionar en ambos modos:
-```tsx
-// Variables se adaptan automáticamente
-style={{
-    background: 'var(--bg-surface)',
-    color: 'var(--text-primary)'
-}}
-```
-
+Los componentes deben funcionar en ambos modos con CSS Variables.
 Ver `src/styles/base/light-mode-overrides.css` para overrides.
+
+---
 
 ## Auto-invoke Skills
 
@@ -114,5 +99,9 @@ Ver `src/styles/base/light-mode-overrides.css` para overrides.
 |------------------------|-------|
 | Cualquier componente UI | `cryptoduels-ui` |
 | Animaciones de juego | `cryptoduels-games` |
-| React patterns | `react-state-management` |
+| Diseño UI/UX profesional | `ui-ux-pro-max` |
+| Diseño frontend general | `frontend-design` |
+| React patterns | `react-patterns` |
+| Estado React/Zustand | `react-state-management` |
 | Testing componentes | `webapp-testing` |
+| Tailwind CSS | `tailwind-patterns` |
