@@ -45,6 +45,14 @@ const GamePage: React.FC = () => {
         return () => setIsRisky(false);
     }, [gameStage, setIsRisky]);
 
+    // SOLID: Single Responsibility - Reset state when game changes (navigation via dropdown)
+    // WHY: Prevents showing previous game's result screen in new game
+    useEffect(() => {
+        secureLog.info('Game changed to:', id);
+        setGameStage('selection');
+        setSelectedTier(null);
+    }, [id]);
+
     // Get game config from constants
     const gameConfig = getGameById(id ?? '');
 

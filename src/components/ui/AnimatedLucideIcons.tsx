@@ -955,3 +955,71 @@ export const AnimatedMultipleDiamonds = ({ size = 24, color = "currentColor", st
         </div>
     );
 };
+
+/**
+ * Animated Cards Icon (Higher/Lower)
+ * Back card static, front card moves vertically.
+ */
+export const AnimatedCards = ({ size = 24, color = "currentColor", strokeWidth = 2, className = "", animateOnHover = false }) => {
+    const frontCardVariants = {
+        normal: { y: 0 },
+        animate: {
+            y: [0, -4, 0, 4, 0],
+            transition: {
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+                times: [0, 0.25, 0.5, 0.75, 1]
+            }
+        }
+    };
+
+    const arrowVariants = {
+        normal: { opacity: 0 },
+        animate: {
+            opacity: [0, 1, 0, 1, 0],
+            pathLength: [0, 1, 0, 1, 0],
+            d: [
+                "M16 12l0 0", // Hidden
+                "M16 14l0 -4", // Up arrow shaft
+                "M16 14l0 4", // Down transition
+                "M16 10l0 4", // Down arrow shaft
+                "M16 12l0 0"  // Hidden
+            ],
+            transition: {
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+            }
+        }
+    };
+
+    return (
+        <motion.svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={color}
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+        >
+            {/* Back Card */}
+            <rect x="4" y="4" width="12" height="16" rx="2" strokeOpacity="0.5" />
+
+            {/* Front Card */}
+            <motion.g
+                initial="normal"
+                animate={animateOnHover ? "normal" : "animate"}
+                whileHover={animateOnHover ? "animate" : undefined}
+                variants={frontCardVariants}
+            >
+                <rect x="8" y="4" width="12" height="16" rx="2" fill="var(--bg-surface, #000)" stroke={color} />
+                {/* Symbol on card */}
+                <path d="M14 12h.01" strokeWidth={3} />
+            </motion.g>
+        </motion.svg>
+    );
+};

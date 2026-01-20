@@ -7,7 +7,7 @@ import { useArena } from './ArenaContext';
 import { UI_CONFIG } from '../../constants/config';
 import { EtherLoader } from '../ui';
 import SelectionScreen from './SelectionScreen';
-import { CoinFlipAnimation, DiceAnimation, RPSAnimation, MemoryAnimation, QuickDrawAnimation, BlockValidationAnimation } from './animations';
+import { CoinFlipAnimation, DiceAnimation, RPSAnimation, MemoryAnimation, QuickDrawAnimation, BlockValidationAnimation, HigherLowerAnimation } from './animations';
 
 const ArenaBoard: React.FC = () => {
     const { gameState, gameType, actions } = useArena();
@@ -110,6 +110,27 @@ const ArenaBoard: React.FC = () => {
                             countdownLeft: gameState.countdownLeft
                         }}
                         onCellClick={actions.handleBlockCellClick}
+                    />
+                );
+            case 'higherlower':
+                return (
+                    <HigherLowerAnimation
+                        status={status}
+                        result={result as { outcome: 'win' | 'loss'; playerScore: number; opponentScore: number; playerLives: number; opponentLives: number; rounds: number } | null}
+                        gameState={{
+                            hlCurrentCard: gameState.hlCurrentCard,
+                            hlNextCard: gameState.hlNextCard,
+                            hlPlayerScore: gameState.hlPlayerScore,
+                            hlOpponentScore: gameState.hlOpponentScore,
+                            hlPlayerLives: gameState.hlPlayerLives,
+                            hlOpponentLives: gameState.hlOpponentLives,
+                            hlPhase: gameState.hlPhase,
+                            hlPlayerPrediction: gameState.hlPlayerPrediction,
+                            hlTimeLeft: gameState.hlTimeLeft,
+                            hlRound: gameState.hlRound,
+                            countdownLeft: gameState.countdownLeft,
+                        }}
+                        onPredict={actions.handleHLPredict}
                     />
                 );
             default: return <div className="text-secondary">Juego no soportado</div>;

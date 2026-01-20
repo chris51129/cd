@@ -80,6 +80,17 @@ export interface GameState {
     readonly blockStartTime?: number;
     readonly blockTimeLeft?: number;
     readonly blockTimestamps?: readonly number[];
+    // Higher/Lower
+    readonly hlCurrentCard?: import('../games/core/gameReducer').Card | null;
+    readonly hlNextCard?: import('../games/core/gameReducer').Card | null;
+    readonly hlPlayerScore?: number;
+    readonly hlOpponentScore?: number;
+    readonly hlPlayerLives?: number;
+    readonly hlOpponentLives?: number;
+    readonly hlPhase?: 'countdown' | 'waiting' | 'reveal' | 'result';
+    readonly hlPlayerPrediction?: 'higher' | 'lower' | null;
+    readonly hlTimeLeft?: number;
+    readonly hlRound?: number;
 }
 
 /** Game finish result */
@@ -101,6 +112,7 @@ export interface GameActions {
     readonly handleMemoryCardClick: (index: number) => void;
     readonly handleQuickDrawClick: () => void;
     readonly handleBlockCellClick: (clickedNumber: number) => void;
+    readonly handleHLPredict: (prediction: 'higher' | 'lower') => void;
 }
 
 /** Hook return type */
@@ -192,6 +204,18 @@ const useGameEngine = ({ gameType, onFinish }: UseGameEngineProps): UseGameEngin
             const numbers = Array.from({ length: 25 }, (_, i) => i + 1);
             const blockGrid = secureShuffleArray(numbers);
             dispatch({ type: 'SET_BLOCK_GRID', blockGrid });
+        } else if (gameType === 'higherlower') {
+            // Generate deck with ONLY numeric cards (2-10) to avoid confusion
+            // WHY: Letter cards (J, Q, K, A) have ambiguous values for players
+            const suits: Array<'hearts' | 'diamonds' | 'clubs' | 'spades'> = ['hearts', 'diamonds', 'clubs', 'spades'];
+            const deck: Array<{ suit: 'hearts' | 'diamonds' | 'clubs' | 'spades'; rank: number }> = [];
+            for (const suit of suits) {
+                for (let rank = 2; rank <= 10; rank++) {
+                    deck.push({ suit, rank });
+                }
+            }
+            const shuffledDeck = secureShuffleArray(deck);
+            dispatch({ type: 'HL_INIT', deck: shuffledDeck });
         }
     }, [state.phase, gameType, strategy]);
 
@@ -488,6 +512,67 @@ const useGameEngine = ({ gameType, onFinish }: UseGameEngineProps): UseGameEngin
         }
     }, [state.blockNextTarget, state.blockErrors]);
 
+    // ========== HIGHER/LOWER: Prediction Handler ==========
+
+    const handleHLPredict = useCallback((prediction: 'higher' | 'lower'): void => {
+        dispatch({ type: 'HL_PREDICT', prediction });
+    }, []);
+
+    // ========== HIGHER/LOWER: Countdown -> Waiting ==========
+
+    useEffect(() => {
+        if (gameType !== 'higherlower') return;
+        if (state.hlPhase !== 'countdown') return;
+        if (state.countdownLeft > 0) return;
+
+        // Transition to waiting phase
+        dispatch({ type: 'START_PLAYING' });
+    }, [gameType, state.hlPhase, state.countdownLeft]);
+
+    // Note: START_PLAYING for higherlower needs to set hlPhase to 'waiting'
+    // This is handled in the reducer's handleStartPlaying
+
+    // ========== HIGHER/LOWER: Reveal (Calculate results) ==========
+
+    useEffect(() => {
+        if (gameType !== 'higherlower') return;
+        if (state.hlPhase !== 'reveal') return;
+
+        // Calculate opponent luck here (purely in the shell)
+        const opponentCorrect = secureRandomInt(1, 100) <= 55;
+
+        // Dispatch reveal to calculate scores and transition to 'revealed'
+        dispatch({ type: 'HL_REVEAL', opponentCorrect });
+    }, [gameType, state.hlPhase]); // No dep en state.phase para evitar re-runs
+
+    // ========== HIGHER/LOWER: Revealed -> Next Round ==========
+
+    useEffect(() => {
+        if (gameType !== 'higherlower') return;
+        if (state.hlPhase !== 'revealed') return;
+
+        // After animation delay, advance to next round if game continues
+        const timer = setTimeout(() => {
+            if (state.phase !== PHASES.RESULT) {
+                dispatch({ type: 'HL_NEXT_ROUND' });
+            }
+        }, 1500); // 1.5s to show result
+
+        return () => clearTimeout(timer);
+    }, [gameType, state.hlPhase, state.phase]);
+
+    // ========== HIGHER/LOWER: Timeout (No Prediction) ==========
+
+    useEffect(() => {
+        if (gameType !== 'higherlower') return;
+        if (state.hlPhase !== 'waiting') return;
+        if (state.hlTimeLeft > 0) return;
+        if (state.hlPlayerPrediction !== null) return; // Already predicted
+
+        // Time ran out - dispatch timeout action (guaranteed loss per game rules)
+        dispatch({ type: 'HL_TIMEOUT' });
+    }, [gameType, state.hlPhase, state.hlTimeLeft, state.hlPlayerPrediction]);
+
     // ========== RETURN ==========
 
     const actions = useMemo((): GameActions => ({
@@ -496,7 +581,8 @@ const useGameEngine = ({ gameType, onFinish }: UseGameEngineProps): UseGameEngin
         handleMemoryCardClick,
         handleQuickDrawClick,
         handleBlockCellClick,
-    }), [selectSide, confirmAssigned, handleMemoryCardClick, handleQuickDrawClick, handleBlockCellClick]);
+        handleHLPredict,
+    }), [selectSide, confirmAssigned, handleMemoryCardClick, handleQuickDrawClick, handleBlockCellClick, handleHLPredict]);
 
     // Map reducer state to public interface
     const publicState = useMemo((): GameState => ({
@@ -533,6 +619,17 @@ const useGameEngine = ({ gameType, onFinish }: UseGameEngineProps): UseGameEngin
         blockStartTime: state.blockStartTime,
         blockTimeLeft: Math.ceil(state.blockTimeLeft),
         blockTimestamps: state.blockTimestamps,
+        // Higher/Lower
+        hlCurrentCard: state.hlCurrentCard,
+        hlNextCard: state.hlNextCard,
+        hlPlayerScore: state.hlPlayerScore,
+        hlOpponentScore: state.hlOpponentScore,
+        hlPlayerLives: state.hlPlayerLives,
+        hlOpponentLives: state.hlOpponentLives,
+        hlPhase: state.hlPhase,
+        hlPlayerPrediction: state.hlPlayerPrediction,
+        hlTimeLeft: state.hlTimeLeft,
+        hlRound: state.hlRound,
     }), [state]);
 
     return {

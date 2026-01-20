@@ -51,6 +51,7 @@ const _testDeepReadonly: DeepReadonlyTest = {
     },
     arr: ['a', 'b'],
 };
+void _testDeepReadonly; // Compile-time type test, usage not required
 
 // ============================================
 // DeepPartial Tests
@@ -64,6 +65,7 @@ const _testDeepPartial: DeepPartialTest = {
         d: {}, // e is optional
     },
 };
+void _testDeepPartial; // Compile-time type test
 
 // ============================================
 // Paths Tests
@@ -80,6 +82,7 @@ const _validPaths: PathsTest[] = [
     'b.d',
     'b.d.e',
 ];
+void _validPaths; // Compile-time type test
 
 // ============================================
 // PathValue Tests

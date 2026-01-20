@@ -15,6 +15,7 @@ import {
     type MemoryPhase,
     type QuickDrawPhase,
     type BlockPhase,
+    type HigherLowerPhase,
 } from './gameReducer';
 import { type Milliseconds, ms, PHASES, OUTCOMES } from '../../engine';
 
@@ -39,7 +40,8 @@ export const arbGameType = (): fc.Arbitrary<GameType> =>
         'rps',
         'memory',
         'quickdraw',
-        'blockvalidation'
+        'blockvalidation',
+        'higherlower'
     );
 
 /**
@@ -76,6 +78,12 @@ export const arbQuickDrawPhase = (): fc.Arbitrary<QuickDrawPhase> =>
  */
 export const arbBlockPhase = (): fc.Arbitrary<BlockPhase> =>
     fc.constantFrom<BlockPhase>('countdown', 'playing', 'result');
+
+/**
+ * HigherLower phase
+ */
+export const arbHigherLowerPhase = (): fc.Arbitrary<HigherLowerPhase> =>
+    fc.constantFrom<HigherLowerPhase>('countdown', 'waiting', 'reveal', 'result');
 
 /**
  * Valid board index (0-15)
@@ -206,6 +214,28 @@ export const arbGameState = (): fc.Arbitrary<GameState> =>
         blockStartTime: fc.integer({ min: 0, max: 100000 }),
         blockTimeLeft: fc.integer({ min: 0, max: 60 }),
         blockTimestamps: fc.array(fc.integer({ min: 0, max: 100000 }), { maxLength: 25 }),
+
+        // HigherLower
+        hlCurrentCard: fc.oneof(fc.constant(null), fc.record({
+            suit: fc.constantFrom<'hearts' | 'diamonds' | 'clubs' | 'spades'>('hearts', 'diamonds', 'clubs', 'spades'),
+            rank: fc.integer({ min: 1, max: 13 }),
+        })),
+        hlNextCard: fc.oneof(fc.constant(null), fc.record({
+            suit: fc.constantFrom<'hearts' | 'diamonds' | 'clubs' | 'spades'>('hearts', 'diamonds', 'clubs', 'spades'),
+            rank: fc.integer({ min: 1, max: 13 }),
+        })),
+        hlDeck: fc.array(fc.record({
+            suit: fc.constantFrom<'hearts' | 'diamonds' | 'clubs' | 'spades'>('hearts', 'diamonds', 'clubs', 'spades'),
+            rank: fc.integer({ min: 1, max: 13 }),
+        }), { maxLength: 52 }),
+        hlPlayerScore: fc.integer({ min: 0, max: 5 }),
+        hlOpponentScore: fc.integer({ min: 0, max: 5 }),
+        hlPlayerLives: fc.integer({ min: 0, max: 3 }),
+        hlOpponentLives: fc.integer({ min: 0, max: 3 }),
+        hlPhase: arbHigherLowerPhase(),
+        hlPlayerPrediction: fc.oneof(fc.constant(null), fc.constantFrom<'higher' | 'lower'>('higher', 'lower')),
+        hlRound: fc.integer({ min: 1, max: 50 }),
+        hlTimeLeft: fc.integer({ min: 0, max: 10 }),
     }) as fc.Arbitrary<GameState>;
 
 // ============================================

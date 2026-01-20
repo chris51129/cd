@@ -81,9 +81,10 @@ npm run lint       # Linting
 | Memory | Habilidad | Encuentra 8 pares de cartas |
 | QuickDraw | Habilidad | Reacción rápida al círculo verde |
 | BlockValidation | Habilidad | Clicks secuenciales 1-25 |
-| RPS | Suerte | Piedra, Papel, Tijeras |
-| Coinflip | Suerte | Cara o Cruz |
-| Dice | Suerte | Dado más alto gana |
+| RPS | Probabilidad | Piedra, Papel, Tijeras |
+| Coinflip | Probabilidad | Cara o Cruz |
+| Dice | Probabilidad | Dado más alto gana |
+| Higher/Lower | Probabilidad | Predice si la carta es mayor o menor |
 
 ## Workflows Disponibles
 

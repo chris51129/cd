@@ -16,6 +16,7 @@ const animationPreloaders: Record<string, () => Promise<unknown>> = {
     memory: () => import('../game/animations/MemoryAnimation'),
     quickdraw: () => import('../game/animations/QuickDrawAnimation'),
     blockvalidation: () => import('../game/animations/BlockValidationAnimation'),
+    higherlower: () => import('../game/animations/HigherLowerAnimation'),
 };
 
 // Configuración de badges según tipo

@@ -84,7 +84,7 @@ class PhysicsWorkerManager {
      * Handle messages from worker
      */
     private handleMessage(event: MessageEvent): void {
-        const { type, id, payload } = event.data;
+        const { id, payload } = event.data;
 
         const pending = this.pendingRequests.get(id);
         if (pending) {

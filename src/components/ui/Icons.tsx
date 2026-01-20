@@ -19,7 +19,8 @@ import {
     AnimatedDice,
     AnimatedRPS,
     AnimatedBrain,
-    AnimatedGrid
+    AnimatedGrid,
+    AnimatedCards
 } from './AnimatedLucideIcons';
 import AnimatedIcon from './AnimatedIcon';
 
@@ -161,5 +162,6 @@ export const Icons = {
     CPU: AnimatedCPU,
     Zap: AnimatedZap,
     Layout: SafeLayoutGrid,
-    Probability: SafeSparkles
+    Probability: SafeSparkles,
+    Cards: AnimatedCards
 };

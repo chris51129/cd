@@ -20,13 +20,14 @@ import rpsStrategy from './rps.strategy';
 import memoryStrategy from './memory.strategy';
 import quickdrawStrategy from './quickdraw.strategy';
 import blockvalidationStrategy from './blockvalidation.strategy';
+import higherlowerStrategy from './higherlower.strategy';
 
 // ============================================
 // Types
 // ============================================
 
 /** Valid game types */
-export type ValidGameType = 'coinflip' | 'dice' | 'rps' | 'memory' | 'quickdraw' | 'blockvalidation';
+export type ValidGameType = 'coinflip' | 'dice' | 'rps' | 'memory' | 'quickdraw' | 'blockvalidation' | 'higherlower';
 
 /** Strategy registry type */
 type StrategyRegistry = Record<ValidGameType, GameStrategy<Record<string, unknown>>>;
@@ -45,6 +46,7 @@ const strategies: StrategyRegistry = {
     memory: memoryStrategy as unknown as GameStrategy<Record<string, unknown>>,
     quickdraw: quickdrawStrategy as unknown as GameStrategy<Record<string, unknown>>,
     blockvalidation: blockvalidationStrategy as unknown as GameStrategy<Record<string, unknown>>,
+    higherlower: higherlowerStrategy as unknown as GameStrategy<Record<string, unknown>>,
 };
 
 // ============================================

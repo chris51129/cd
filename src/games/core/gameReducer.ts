@@ -21,7 +21,7 @@ import { GAME_CONFIG } from '../../constants/config';
 /**
  * Game types supported by the engine
  */
-export type GameType = 'coinflip' | 'dice' | 'rps' | 'memory' | 'quickdraw' | 'blockvalidation';
+export type GameType = 'coinflip' | 'dice' | 'rps' | 'memory' | 'quickdraw' | 'blockvalidation' | 'higherlower';
 
 /**
  * Memory phase sub-states
@@ -37,6 +37,19 @@ export type QuickDrawPhase = 'countdown' | 'waiting' | 'signal' | 'result';
  * BlockValidation phase sub-states
  */
 export type BlockPhase = 'countdown' | 'playing' | 'result';
+
+/**
+ * HigherLower phase sub-states
+ */
+export type HigherLowerPhase = 'countdown' | 'waiting' | 'reveal' | 'result';
+
+/**
+ * Card structure for Higher/Lower
+ */
+export interface Card {
+    readonly suit: 'hearts' | 'diamonds' | 'clubs' | 'spades';
+    readonly rank: number; // 1-13 (A=1, J=11, Q=12, K=13)
+}
 
 /**
  * Score structure
@@ -97,6 +110,19 @@ export interface GameState {
     readonly blockStartTime: number;
     readonly blockTimeLeft: number;
     readonly blockTimestamps: readonly number[];
+
+    // Higher/Lower
+    readonly hlCurrentCard: Card | null;
+    readonly hlNextCard: Card | null;
+    readonly hlDeck: readonly Card[];
+    readonly hlPlayerScore: number;
+    readonly hlOpponentScore: number;
+    readonly hlPlayerLives: number;
+    readonly hlOpponentLives: number;
+    readonly hlPhase: 'countdown' | 'waiting' | 'reveal' | 'revealed' | 'result';
+    readonly hlPlayerPrediction: 'higher' | 'lower' | null;
+    readonly hlRound: number;
+    readonly hlTimeLeft: number;
 }
 
 // ============================================
@@ -120,7 +146,11 @@ export type GameAction =
     | { type: 'OPPONENT_MATCH' }
     | { type: 'QUICK_DRAW_CLICK' }
     | { type: 'QUICK_DRAW_SIGNAL' }
-    | { type: 'BLOCK_CELL_CLICK'; number: number }
+    | { type: 'HL_INIT'; deck: readonly Card[] }
+    | { type: 'HL_PREDICT'; prediction: 'higher' | 'lower' }
+    | { type: 'HL_REVEAL'; opponentCorrect: boolean }
+    | { type: 'HL_NEXT_ROUND' }
+    | { type: 'HL_TIMEOUT' }
     | { type: 'TIME_UP' }
     | { type: 'COUNTDOWN_TICK' }
     | { type: 'START_PLAYING' }
@@ -128,7 +158,12 @@ export type GameAction =
     | { type: 'SET_BOARD'; board: readonly number[]; revealedIndices: readonly number[] }
     | { type: 'SET_BLOCK_GRID'; blockGrid: readonly number[] }
     | { type: 'FINISH_GAME'; isWin: boolean; result: unknown }
-    | { type: 'FLIP_BACK' };
+    | { type: 'FLIP_BACK' }
+    // Higher/Lower actions
+    | { type: 'HL_INIT'; deck: readonly Card[] }
+    | { type: 'HL_PREDICT'; prediction: 'higher' | 'lower' }
+    | { type: 'HL_REVEAL' }
+    | { type: 'HL_NEXT_ROUND' };
 
 // ============================================
 // Initial State Factory
@@ -187,6 +222,19 @@ export const createInitialState = (gameType: GameType): GameState => ({
     blockStartTime: 0,
     blockTimeLeft: 30,
     blockTimestamps: [],
+
+    // HigherLower
+    hlCurrentCard: null,
+    hlNextCard: null,
+    hlDeck: [],
+    hlPlayerScore: 0,
+    hlOpponentScore: 0,
+    hlPlayerLives: 3,
+    hlOpponentLives: 3,
+    hlPhase: 'countdown',
+    hlPlayerPrediction: null,
+    hlRound: 1,
+    hlTimeLeft: 5,
 });
 
 // ============================================
@@ -240,6 +288,20 @@ const handleTick = (state: GameState, deltaTime: Milliseconds): GameState => {
             const decrement = deltaTime / 1000;
             const newTimeLeft = Math.max(0, state.blockTimeLeft - decrement);
             updates = { ...updates, blockTimeLeft: newTimeLeft };
+        }
+    }
+
+    // HigherLower countdown and prediction time
+    if (state.gameType === 'higherlower') {
+        if (state.hlPhase === 'countdown' && state.countdownLeft > 0) {
+            const decrement = deltaTime / 1000;
+            const newCountdown = Math.max(0, state.countdownLeft - decrement);
+            updates = { ...updates, countdownLeft: newCountdown };
+        }
+        if (state.hlPhase === 'waiting' && state.hlTimeLeft > 0) {
+            const decrement = deltaTime / 1000;
+            const newTimeLeft = Math.max(0, state.hlTimeLeft - decrement);
+            updates = { ...updates, hlTimeLeft: newTimeLeft };
         }
     }
 
@@ -465,6 +527,17 @@ const handleStartPlaying = (state: GameState): GameState => {
         };
     }
 
+    if (state.gameType === 'higherlower') {
+        if (state.hlPhase !== 'countdown') return state;
+        return {
+            ...state,
+            hlPhase: 'waiting',
+            hlTimeLeft: 5,
+            phase: PHASES.SPIN,
+            status: 'spin'
+        };
+    }
+
     return state;
 };
 
@@ -685,6 +758,212 @@ const handleSetBlockGrid = (state: GameState, blockGrid: readonly number[]): Gam
 };
 
 // ============================================
+// Higher/Lower Handlers
+// ============================================
+
+/**
+ * Handle HL_INIT action - initialize deck and first cards
+ * WHY: Sets up the game with a shuffled deck
+ */
+const handleHLInit = (state: GameState, deck: readonly Card[]): GameState => {
+    if (state.gameType !== 'higherlower') return state;
+    if (deck.length < 2) return state;
+
+    const [current, next, ...rest] = deck;
+
+    return {
+        ...state,
+        hlDeck: rest,
+        hlCurrentCard: current,
+        hlNextCard: next,
+        hlPhase: 'countdown',
+        countdownLeft: 3,
+        phase: PHASES.SPIN,
+        status: 'spin',
+    };
+};
+
+/**
+ * Handle HL_PREDICT action - player makes a prediction
+ * WHY: Records player's choice and transitions to reveal phase
+ */
+const handleHLPredict = (state: GameState, prediction: 'higher' | 'lower'): GameState => {
+    if (state.gameType !== 'higherlower') return state;
+    if (state.hlPhase !== 'waiting') return state;
+    if (state.hlPlayerPrediction !== null) return state; // Already predicted
+
+    return {
+        ...state,
+        hlPlayerPrediction: prediction,
+        hlPhase: 'reveal',
+    };
+};
+
+/**
+ * Handle HL_REVEAL action - reveal the next card and calculate results
+ * WHY: Determines if prediction was correct and updates scores/lives
+ */
+const handleHLReveal = (state: GameState, opponentCorrect: boolean): GameState => {
+    if (state.gameType !== 'higherlower') return state;
+    if (state.hlPhase !== 'reveal') return state;
+    if (!state.hlCurrentCard || !state.hlNextCard) return state;
+
+    const current = state.hlCurrentCard;
+    const next = state.hlNextCard;
+    const prediction = state.hlPlayerPrediction;
+
+    // If no prediction (timeout), treat as wrong
+    const isHigher = next.rank > current.rank;
+    const isSame = next.rank === current.rank;
+    const isCorrect = prediction !== null && !isSame && (
+        (prediction === 'higher' && isHigher) ||
+        (prediction === 'lower' && !isHigher)
+    );
+    // If same rank, it's a push (no change)
+    const isPush = isSame;
+
+    const newPlayerScore = isPush ? state.hlPlayerScore : (isCorrect ? state.hlPlayerScore + 1 : state.hlPlayerScore);
+    const newPlayerLives = isPush ? state.hlPlayerLives : (isCorrect ? state.hlPlayerLives : Math.max(0, state.hlPlayerLives - 1));
+    const newOpponentScore = isPush ? state.hlOpponentScore : (opponentCorrect ? state.hlOpponentScore + 1 : state.hlOpponentScore);
+    const newOpponentLives = isPush ? state.hlOpponentLives : (opponentCorrect ? state.hlOpponentLives : Math.max(0, state.hlOpponentLives - 1));
+
+    // Check win conditions
+    const playerWins = newPlayerScore >= 5 || newOpponentLives <= 0;
+    const opponentWins = newOpponentScore >= 5 || newPlayerLives <= 0;
+
+    if (playerWins || opponentWins) {
+        return {
+            ...state,
+            hlPlayerScore: newPlayerScore,
+            hlPlayerLives: newPlayerLives,
+            hlOpponentScore: newOpponentScore,
+            hlOpponentLives: newOpponentLives,
+            hlPhase: 'result',
+            phase: PHASES.RESULT,
+            status: 'result',
+            outcome: playerWins ? OUTCOMES.WIN : OUTCOMES.LOSS,
+            result: {
+                outcome: playerWins ? 'win' : 'loss',
+                playerScore: newPlayerScore,
+                opponentScore: newOpponentScore,
+                playerLives: newPlayerLives,
+                opponentLives: newOpponentLives,
+                rounds: state.hlRound,
+            }
+        };
+    }
+
+    // Game continues - store updated scores and transition to 'revealed' to stop loop
+    return {
+        ...state,
+        hlPlayerScore: newPlayerScore,
+        hlPlayerLives: newPlayerLives,
+        hlOpponentScore: newOpponentScore,
+        hlOpponentLives: newOpponentLives,
+        hlPhase: 'revealed',
+    };
+};
+
+/**
+ * Handle HL_NEXT_ROUND action - advance to next round after reveal animation
+ * WHY: Sets up next card and resets prediction state
+ */
+const handleHLNextRound = (state: GameState): GameState => {
+    if (state.gameType !== 'higherlower') return state;
+    if (state.hlPhase !== 'revealed') return state;
+
+    // Next card becomes current, draw new next from deck
+    const newCurrent = state.hlNextCard;
+    const [newNext, ...restDeck] = state.hlDeck;
+
+    // If deck is empty, game ends (shouldn't happen with 52 cards but safety check)
+    if (!newNext) {
+        const playerWins = state.hlPlayerScore >= state.hlOpponentScore;
+        return {
+            ...state,
+            hlPhase: 'result',
+            phase: PHASES.RESULT,
+            status: 'result',
+            outcome: playerWins ? OUTCOMES.WIN : OUTCOMES.LOSS,
+            result: {
+                outcome: playerWins ? 'win' : 'loss',
+                playerScore: state.hlPlayerScore,
+                opponentScore: state.hlOpponentScore,
+                playerLives: state.hlPlayerLives,
+                opponentLives: state.hlOpponentLives,
+                rounds: state.hlRound,
+            }
+        };
+    }
+
+    return {
+        ...state,
+        hlCurrentCard: newCurrent,
+        hlNextCard: newNext,
+        hlDeck: restDeck,
+        hlPlayerPrediction: null,
+        hlPhase: 'waiting',
+        hlRound: state.hlRound + 1,
+        hlTimeLeft: 5, // Reset prediction timer
+    };
+};
+
+/**
+ * Handle HL_TIMEOUT action - player didn't predict in time
+ * WHY: Timeout = automatic failure (rules state this clearly)
+ * NOTE: We calculate the result inline to avoid timing issues with useEffect
+ */
+const handleHLTimeout = (state: GameState): GameState => {
+    if (state.gameType !== 'higherlower') return state;
+    if (state.hlPhase !== 'waiting') return state;
+    if (state.hlPlayerPrediction !== null) return state; // Already predicted
+
+    // Player timeout = automatic loss of 1 life (no chance to be correct)
+    // Opponent simulated with 55% success rate (calculated here to avoid needing separate effect)
+    const opponentCorrect = Math.random() <= 0.55;
+
+    const newPlayerLives = Math.max(0, state.hlPlayerLives - 1);
+    const newOpponentScore = opponentCorrect ? state.hlOpponentScore + 1 : state.hlOpponentScore;
+    const newOpponentLives = opponentCorrect ? state.hlOpponentLives : Math.max(0, state.hlOpponentLives - 1);
+
+    // Check if game ends
+    const playerWins = newOpponentLives <= 0;
+    const opponentWins = state.hlOpponentScore >= 5 || newPlayerLives <= 0;
+
+    if (playerWins || opponentWins) {
+        return {
+            ...state,
+            hlPlayerPrediction: null,
+            hlPlayerLives: newPlayerLives,
+            hlOpponentScore: newOpponentScore,
+            hlOpponentLives: newOpponentLives,
+            hlPhase: 'result',
+            phase: PHASES.RESULT,
+            status: 'result',
+            outcome: playerWins ? OUTCOMES.WIN : OUTCOMES.LOSS,
+            result: {
+                outcome: playerWins ? 'win' : 'loss',
+                playerScore: state.hlPlayerScore,
+                opponentScore: newOpponentScore,
+                playerLives: newPlayerLives,
+                opponentLives: newOpponentLives,
+                rounds: state.hlRound,
+            }
+        };
+    }
+
+    // Game continues - skip 'reveal' phase and go directly to 'revealed' to show feedback
+    return {
+        ...state,
+        hlPlayerPrediction: null, // Explicitly null = timeout
+        hlPlayerLives: newPlayerLives,
+        hlOpponentScore: newOpponentScore,
+        hlOpponentLives: newOpponentLives,
+        hlPhase: 'revealed',
+    };
+};
+
+// ============================================
 // Main Reducer
 // ============================================
 
@@ -761,6 +1040,22 @@ export const gameReducer = (state: GameState, action: GameAction): GameState => 
         case 'TIME_UP':
             // Handled by shell - determines winner and dispatches FINISH_GAME
             return state;
+
+        // Higher/Lower actions
+        case 'HL_INIT':
+            return handleHLInit(state, action.deck);
+
+        case 'HL_PREDICT':
+            return handleHLPredict(state, action.prediction);
+
+        case 'HL_REVEAL':
+            return handleHLReveal(state, action.opponentCorrect);
+
+        case 'HL_NEXT_ROUND':
+            return handleHLNextRound(state);
+
+        case 'HL_TIMEOUT':
+            return handleHLTimeout(state);
 
         default:
             return state;

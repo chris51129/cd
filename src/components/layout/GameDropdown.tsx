@@ -11,7 +11,8 @@ const DROPDOWN_GAMES = [
         items: [
             { id: 'coinflip', title: 'Cara o Cruz', desc: '50/50 Probabilidad', icon: 'AnimatedCoin' },
             { id: 'dice', title: 'Duelo de Dados', desc: 'Suma y domina', icon: 'AnimatedDice' },
-            { id: 'rps', title: 'Piedra, Papel o Tijera', desc: 'Duelo Ancestral', icon: 'AnimatedRPS' }
+            { id: 'rps', title: 'Piedra, Papel o Tijera', desc: 'Duelo Ancestral', icon: 'AnimatedRPS' },
+            { id: 'higherlower', title: 'Mayor o Menor', desc: 'Predice la carta', icon: 'AnimatedCards' }
         ]
     },
     {

@@ -676,4 +676,37 @@
         background: #1E4ADB !important;
         box-shadow: 0 4px 12px rgba(46, 92, 255, 0.35) !important;
     }
+
+    /* =========================================
+       Higher/Lower Game - Light Mode
+       ========================================= */
+
+    /* Cards - Clean scandinavian style */
+    .hl-card,
+    [class*="CardDisplay"] {
+        background: rgba(255, 255, 255, 0.95) !important;
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    }
+
+    /* Scoreboard */
+    .hl-scoreboard {
+        background: rgba(255, 255, 255, 0.8) !important;
+        border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    }
+
+    /* Header round/timer */
+    .hl-header {
+        background: rgba(255, 255, 255, 0.7) !important;
+        border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    }
+
+    /* Prediction buttons */
+    .hl-btn-higher {
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+    }
+
+    .hl-btn-lower {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    }
 }

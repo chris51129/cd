@@ -14,6 +14,7 @@ export const RPSAnimation = lazy(() => import('./RPSAnimation'));
 export const MemoryAnimation = lazy(() => import('./MemoryAnimation'));
 export const QuickDrawAnimation = lazy(() => import('./QuickDrawAnimation'));
 export const BlockValidationAnimation = lazy(() => import('./BlockValidationAnimation'));
+export const HigherLowerAnimation = lazy(() => import('./HigherLowerAnimation'));
 
 // Re-export for backwards compatibility if needed
 // Note: Consumers MUST wrap these in <Suspense> with a fallback

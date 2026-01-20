@@ -48,8 +48,13 @@ const ArenaHeader: React.FC = () => {
     };
 
     return (
-        <div className="arena-header" style={{ opacity: phase === 'selection' ? 0.5 : 1 }}>
-            <div className="text-secondary text-sm tracking-widest mb-2">COMPROMISO DE ENTRADA</div>
+        <div className="arena-header" style={{
+            opacity: phase === 'selection' ? 0.5 : (phase === 'spin' ? 0.2 : 1),
+            transition: 'opacity 0.3s ease'
+        }}>
+            <div className="text-secondary text-sm tracking-widest mb-2" style={{
+                visibility: phase === 'spin' ? 'hidden' : 'visible'
+            }}>COMPROMISO DE ENTRADA</div>
             <div className="text-2xl font-bold flex-center flex-gap-4 mb-4">
                 <span className="flex-center" style={{ width: 32, height: 32, display: 'inline-flex' }}>
                     {gameType === 'rps' ? <AnimatedIcons.AnimatedRPS size={32} /> :

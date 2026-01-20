@@ -40,6 +40,16 @@ const GAMES_DATA = [
         link: '/game/rps'
     },
     {
+        id: 'higherlower',
+        title: 'Mayor o Menor',
+        desc: 'Predice si la siguiente carta será mayor o menor. Duelo de intuición.',
+        type: 'Probabilidad',
+        Icon: Icons.Cards,
+        category: 'probability',
+        badge: 'NEW',
+        link: '/game/higherlower'
+    },
+    {
         id: 'memory',
         title: 'Memoria Cripto',
         desc: 'Compite contra tiempo y oponente. Encuentra más parejas en 30 segundos.',

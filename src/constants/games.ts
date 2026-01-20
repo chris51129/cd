@@ -33,7 +33,7 @@ export interface Game {
 /**
  * Valid game IDs (union type for type safety)
  */
-export type GameId = 'coinflip' | 'dice' | 'rps' | 'memory' | 'quickdraw' | 'blockvalidation';
+export type GameId = 'coinflip' | 'dice' | 'rps' | 'memory' | 'quickdraw' | 'blockvalidation' | 'higherlower';
 
 /**
  * Games record type (maps GameId to Game)
@@ -123,6 +123,20 @@ export const GAMES: GamesRecord = {
             mechanics: 'Cuadrícula de 5x5 con estados desordenados: vincula del 1 al 25 en orden ascendente.',
             winCondition: 'El participante con la validación completa más veloz obtiene la recompensa.',
             penalties: 'Un error de validación suspende la interactividad por 1 segundo (cláusula de error operativo).'
+        }
+    },
+    higherlower: {
+        id: 'higherlower',
+        title: 'Mayor o Menor',
+        icon: '🃏',
+        type: 'Probabilidad',
+        category: 'probability',
+        badge: 'NEW',
+        description: 'Predice si la siguiente carta será mayor o menor. Duelo de intuición y suerte.',
+        rules: {
+            mechanics: 'Se muestra una carta del 2 al 10. Predice si la siguiente será MAYOR o MENOR. Tienes 5 segundos para decidir.',
+            winCondition: 'Acierto = +1 punto. Gana quien llegue a 5 puntos o elimine al oponente. Ejemplo: si ves un 5 y predices MAYOR, ganas si sale 6, 7, 8, 9 o 10.',
+            penalties: 'Error = -1 vida (tienes 3). Sin predicción a tiempo = fallo automático. A 0 vidas pierdes inmediatamente.'
         }
     }
 } as const;
